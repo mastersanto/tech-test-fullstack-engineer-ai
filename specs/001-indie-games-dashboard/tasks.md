@@ -222,10 +222,10 @@ keeps working.
 
 ### Implementation for User Story 2
 
-- [ ] T025 [P] [US2] Create `src/lib/ai/model.ts`: `import { anthropic } from
+- [X] T025 [P] [US2] Create `src/lib/ai/model.ts`: `import { anthropic } from
       '@ai-sdk/anthropic'`; export `model = anthropic(process.env.ANTHROPIC_MODEL ||
       'claude-opus-5-5')` and `isAiConfigured = () => Boolean(process.env.ANTHROPIC_API_KEY)`.
-- [ ] T026 [US2] Create `src/lib/ai/tools.ts` with four `tool()` definitions (`inputSchema`
+- [X] T026 [US2] Create `src/lib/ai/tools.ts` with four `tool()` definitions (`inputSchema`
       in Zod 4, `execute` calling the repository) exactly as contracts/assistant-tools.md:
       `search_games` `{ query: 1–100 chars, limit?: 1–10 default 5 }` → `{ games,
       total_matches }`; `rank_games` `{ metric: Metric, order?: 'desc'|'asc' default 'desc',
@@ -235,26 +235,26 @@ keeps working.
       `{ found, not_found, ambiguous? }`. Each `execute` logs one line
       `[chat] tool=<name> input=<json>` (contracts/chat-api.md). Write tool `description`s
       that say when to use each one.
-- [ ] T027 [US2] Create `src/lib/ai/agent.ts`: `instructions` string implementing the nine
+- [X] T027 [US2] Create `src/lib/ai/agent.ts`: `instructions` string implementing the nine
       rules in contracts/assistant-tools.md → Agent instructions (scope, always look up,
       ambiguity, ties, "last month", thresholds, comparisons, formatting with the `$142,500` /
       `38,200` / `4.7` examples, follow-ups); `new ToolLoopAgent({ model, instructions,
       tools, stopWhen: isStepCount(5), providerOptions: { anthropic: { effort: 'low' } } })`;
       export `type ChatMessage = InferAgentUIMessage<typeof agent>`.
-- [ ] T028 [US2] Create `src/app/api/chat/route.ts`: `export const maxDuration = 30`; if
+- [X] T028 [US2] Create `src/app/api/chat/route.ts`: `export const maxDuration = 30`; if
       `!isAiConfigured()` return `jsonError(500, 'ai_not_configured', 'ANTHROPIC_API_KEY is
       not set. Copy .env.example to .env.local and add your key.')`; parse body, return `400
       invalid_json` unless `messages` is an array; return `createAgentUIStreamResponse({
       agent, uiMessages: messages, … })`. Check `node_modules/ai/docs/07-reference/` for the
       options that forward error text to the client and suppress reasoning parts, and set
       them (research.md §4 open item).
-- [ ] T029 [US2] Create `src/components/chat/MessageParts.tsx` (`'use client'`): props
+- [X] T029 [US2] Create `src/components/chat/MessageParts.tsx` (`'use client'`): props
       `message: ChatMessage`. Render `text` parts as paragraphs (preserve line breaks); render
       every `tool-*` part as a compact chip: `input-streaming`/`input-available` → spinner +
       "Looking up {toolName}…" with the stringified `input`; `output-available` → check mark
       + "Looked up {toolName}" with the input summary; `output-error` → warning + `errorText`
       (FR-017). Ignore `reasoning`, `step-start` and other part types.
-- [ ] T030 [US2] Create `src/components/chat/ChatView.tsx` (`'use client'`): `useChat<ChatMessage>({
+- [X] T030 [US2] Create `src/components/chat/ChatView.tsx` (`'use client'`): `useChat<ChatMessage>({
       transport: new DefaultChatTransport({ api: '/api/chat' }) })`; message list with
       user/assistant bubbles via `<MessageParts>`; auto-scroll to the newest message; input
       with `maxLength={2000}` and a counter shown from 1,800 chars; Send disabled when input
@@ -263,16 +263,16 @@ keeps working.
       (the `ai_not_configured` text when present) and a Retry button calling `regenerate()`;
       keep partial assistant text visible (FR-012, FR-016, FR-021). Suggested-question chips
       for the three example questions from the brief.
-- [ ] T031 [US2] Create `src/app/chat/page.tsx` rendering a page header and `<ChatView />`.
-- [ ] T032 [US2] Create `tests/tools.test.ts`: build a repository on `createDb(':memory:')`
+- [X] T031 [US2] Create `src/app/chat/page.tsx` rendering a page header and `<ChatView />`.
+- [X] T032 [US2] Create `tests/tools.test.ts`: build a repository on `createDb(':memory:')`
       seeded with `SEED_GAMES` and execute each tool's `execute` for the seven cases in
       contracts/assistant-tools.md → Test expectations (Hollow Depths top revenue; 7 above 4;
       8 at least 4; 2 by "mossgrove studio"; two found/none missing; `['Nonexistent']` →
       `not_found`; "lantern" → 2).
-- [ ] T033 [US2] Run quickstart.md → S2: all 10 questions plus the timing, edit-propagation,
+- [ ] T033 [US2] (Pending: needs a real ANTHROPIC_API_KEY. Key-less paths verified.) Run quickstart.md → S2: all 10 questions plus the timing, edit-propagation,
       missing-key and empty-input checks. Tune `instructions` or tool descriptions until
       10/10 (SC-002); record every prompt adjustment in `AI_WORKFLOW.md`.
-- [ ] T034 [US2] `npm test && npm run lint && npm run typecheck`; append a "Chat assistant"
+- [X] T034 [US2] `npm test && npm run lint && npm run typecheck`; append a "Chat assistant"
       entry to `AI_WORKFLOW.md` → Running log (include at least one concrete case where the
       model or the coding assistant got something wrong and how it was fixed); commit
       `feat: streaming AI chat with catalog lookup tools`.

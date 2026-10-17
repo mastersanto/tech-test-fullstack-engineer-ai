@@ -102,3 +102,24 @@ before any code was written.
 - Verified over HTTP: 12 seeded rows with formatted values, POST shows up after reload, and
   deleting all games then restarting shows the empty state with no reseed. No browser tool was
   available in the session, so the dialog interactions still need a manual click-through.
+
+### Chat assistant (T025–T034)
+
+- `ToolLoopAgent` (AI SDK 7) on `claude-opus-5-5` with `effort: "low"`, four lookup tools,
+  `stopWhen: isStepCount(5)`, served by `createAgentUIStreamResponse`. The prompt contains
+  rules only; every fact comes from a tool call.
+- Resolved the plan's open item by reading the installed SDK's `.d.ts` rather than guessing:
+  `createAgentUIStreamResponse` accepts all `UIMessageStreamOptions`, so
+  `sendReasoning: false` hides the empty reasoning parts that adaptive-thinking models
+  emit, and `onError` replaces the default `"An error occurred."` with a useful message.
+- Found SDK helpers (`isToolUIPart`, `getToolName`, `isTextUIPart`) by grepping the type
+  definitions, instead of hand-writing `part.type.startsWith("tool-")`.
+- Tools take `() => Repository`, so importing the chat route (which `next build` does)
+  never opens the database file, and tests can inject an in-memory repository.
+- Typecheck caught that `tool.execute()` returns `T | AsyncIterable<T>` (streaming tools).
+  Tests use a small typed `run()` helper instead of casting at every call.
+- No API key was available in the session, so verification stopped at the provider. With
+  no key the route returns `500 ai_not_configured`. With a dummy key the response is a
+  proper UI-message SSE stream, Anthropic returns "invalid x-api-key", `onError` logs it,
+  and the client receives the friendly message. The 10 scripted questions (T033) are pending
+  a real key.
