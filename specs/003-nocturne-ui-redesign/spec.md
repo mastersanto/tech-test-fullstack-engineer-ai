@@ -14,6 +14,14 @@ exact colours, sizes and spacing come from there and its `nocturne-theme.css`. T
 defines **what** the operator can do and what must stay true. Where the two disagree on
 behaviour, this spec wins.
 
+## Clarifications
+
+### Session 2026-10-17 (post-implementation)
+
+- Q: SC-002 asked for 12 rows at 1280 × 800, but the handoff's row height (≈52 px at real
+  scale) fits 11 under the heading and toolbar. Squeeze the design or correct the target? →
+  A: Correct the target. The handoff is the visual source of truth; 11 rows (002 had 8).
+
 **Builds on**: [001](../001-indie-games-dashboard/spec.md) (catalog, API, assistant) and
 [002](../002-dashboard-chat-panel/spec.md) (chat beside the table, drawer below 1280 px,
 conversation never reset). It supersedes 001 FR-004's browser confirmation box, and 002
@@ -34,7 +42,7 @@ relative revenue visible without reading numbers.
 
 **Independent Test**: At 1470 × 900, open `/` and compare it with
 `screenshots/01-default.png`. Confirm the dark theme, the 5-column dense table (Game,
-Revenue / mo, Downloads, Rating, actions), the revenue bars, at least 12 rows visible without
+Revenue / mo, Downloads, Rating, actions), the revenue bars, at least 11 rows visible without
 scrolling, and the docked Assistant rail.
 
 **Acceptance Scenarios**:
@@ -303,8 +311,8 @@ conversation and highlight are cleared.
 
 - **SC-001**: At 1470 × 900 the dashboard matches the handoff screenshots 01–07 for each
   corresponding state, judged side by side: same layout, colours, type scale and components.
-- **SC-002**: At 1280 × 800, at least 12 table rows and the assistant input are visible
-  without scrolling (002 required 8).
+- **SC-002**: At 1280 × 800, at least 11 table rows and the assistant input are visible
+  without scrolling (002 required 8; corrected from 12 after implementation, see Clarifications).
 - **SC-003**: Finding a named game by search takes under 5 seconds from opening the page.
 - **SC-004**: For each of the three suggested questions, the highlighted rows match the
   answer's subject exactly, 3 out of 3.

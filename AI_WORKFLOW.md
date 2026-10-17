@@ -293,3 +293,34 @@ to the first text token, and the answer.
 - During planning, the assistant computed WCAG contrast for every token pairing in the
   design. One fails by a hair: the subline on a *selected* row is 4.49:1 against 4.5. The plan
   changes that single pairing from 55% to 60% text (≈ 5.0:1).
+- **Implementation order deviated from tasks.md, on purpose.** The table, toolbar, rail and
+  chat view are each touched by several stories. Writing each file once in its final form,
+  then verifying, avoided building them three times. The pure logic and its 25 new unit tests
+  came first; the UI was then verified as a whole.
+- **[wrong] The handoff's theme CSS couldn't be pasted "verbatim" as its README said.** Its
+  base rules (`body { background }`, `:focus-visible`) are unlayered. In Tailwind v4,
+  unlayered CSS beats every utility, so `body`'s flat colour would have silently hidden the
+  page's glow background. Wrapped in `@layer base`.
+- **[wrong] Rail height.** The handoff gives the rail `min(100vh, 900px)`, assuming it starts
+  at the top of the page; ours sits under a 54 px header, so the first screenshot had **no
+  chat input visible**. Fixed with `calc(100dvh - 54px)`. Caught by looking at the
+  screenshot, not by a check, so a "chat input visible" check was added.
+- **[wrong] I wrote a success criterion the design can't meet.** SC-002 said "12 rows at
+  1280×800" without measuring; the handoff's real row height fits 11. Corrected the spec
+  (post-implementation clarification) instead of squeezing the design.
+- **A real app bug found by the browser suite.** `openEditor()` always set
+  `drawerOpen = true`, which is invisible on wide screens, but after narrowing the window the
+  drawer was already open over the page. Now it opens the drawer only when the screen is
+  narrow.
+- **Three test-script mistakes, fixed before trusting the results.** (1) It waited for the
+  Send button, which also shows while a request is only *submitted*, so it read highlights
+  before any answer existed. (2) Its colour parser didn't understand Tailwind v4's computed
+  `oklab()` colours; replaced with the browser's own conversion via a 1×1 canvas.
+  (3) It deleted Moth & Lantern to check the highlight, but at 4.0 it isn't *above* 4, so it
+  was never highlighted. The app was right; the test's assumption was wrong.
+- Final verification against `next start`: 58/58 browser checks. These cover all four
+  stories, the 002 regressions (drawer, Escape layering, `/chat`, no horizontal scroll at
+  768/1024/1280/1440), the selected-row contrast measured at **5.05:1**, and zero console
+  errors. The 10 scripted questions still score 10/10, and screenshots of states S1–S7 were
+  compared with handoff screenshots 01–07. One leftover was fixed: the browser's native blue
+  clear button in the search box.

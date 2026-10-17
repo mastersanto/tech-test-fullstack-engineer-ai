@@ -32,20 +32,26 @@ Other scripts: `npm test` (Vitest), `npm run lint`, `npm run typecheck`, `npm ru
 
 ## What's inside
 
-Everything is on one page (`/`): the catalog table on the left and the assistant beside it,
-so you can check every answer against the data you can see.
+Everything is on one page (`/`), in a dark design ("Nocturne", from a Claude Design handoff
+in [`design/003/handoff/`](design/003/handoff/)). The catalog fills the page, and a right
+rail holds the assistant or the game editor, so you can check every answer against the data
+you can see.
 
-**Catalog table**: every game, with add, edit and delete in a dialog. Validation runs in the
-browser and again in the API, with the same schema and messages per field. Deleting asks for
-confirmation.
+**Catalog table**: a dense table showing each game's developer and genre, a revenue bar
+relative to the top earner, downloads and rating. Search by title or developer, filter by
+genre, and sort by any column. All of it is kept in the URL (`?q=&genre=&sort=&dir=`), so a
+view survives reload and can be shared. Add and edit open **in the rail**, keeping the table
+in view. Validation runs in the browser and again in the API with the same schema. Deleting
+asks for confirmation, and each change confirms with a short message.
 
 **Assistant**: plain-language questions with streamed answers. Each lookup the assistant
 makes appears as a chip above the answer ("Ranked games · metric: monthly_revenue_usd"), so
 you can see where every number came from. Follow-up questions keep the context. Unknown games
 are reported as not found instead of invented, and off-topic questions are declined.
-From 1280 px wide it's a sticky side panel that is always shown; on narrower screens, "Ask AI" opens it
-as a drawer. Editing games never resets the conversation. `/chat` redirects to `/#chat`,
-which opens the assistant.
+**Games an answer is about light up in the table**, with a "N from last answer" tag to clear
+them; "New chat" starts over. From 1280 px the rail is docked beside the table; on narrower
+screens "Ask AI" opens it as a drawer. Editing, filtering and sorting never reset the
+conversation. `/chat` redirects to `/#chat`, which opens the assistant.
 
 **REST API**
 
@@ -108,20 +114,25 @@ Stack: Next.js 16 (App Router, Cache Components), React 19, Tailwind 4, Vercel A
   `connection()` before reading. Without that, Next would prerender them at build time and
   serve stale data.
 - **Out of scope per the brief:** authentication, deployment, production-grade error handling,
-  full test coverage. Tests cover the data layer and the tools (19 tests), which is where the
-  assistant's correctness comes from.
-- **Every table row carries its own edit dialog.** The page is about 470 KB with 100 games,
-  and still renders in under 100 ms. With a larger catalog, mounting the dialog on demand
-  would fix it.
+  full test coverage. 44 unit tests cover the data layer, the tools, URL parsing and highlight
+  extraction, which is where correctness comes from. UI behaviour was verified with a
+  58-check Playwright run, kept outside the repo.
+- **Dark only.** The design is dark-only by intent; there is no light theme.
+- **Highlights from a count cover at most 20 games.** The count tool lists only its first 20
+  matches, which is plenty at this catalog size.
+- **Filtering runs on the server, per request.** That's simple and fast for tens of games;
+  there is no pagination.
 
 ## Project layout
 
 ```
 src/app/            the dashboard page and API routes
-src/components/     dashboard shell, games table and form, chat panel and view
+src/components/     dashboard shell (shared state), catalog toolbar and table, rail editor,
+                    delete dialog, toast, rail and chat view
 src/lib/db/         Drizzle schema, SQLite client and seed data
-src/lib/games/      repository (all queries) and number formatting
-src/lib/ai/         model, tools and agent
-tests/              repository and tool tests
+src/lib/games/      repository (all queries), URL view parsing, number formatting
+src/lib/ai/         model, tools, agent, and which games an answer references
+tests/              repository, tool, URL view and reference tests
+design/003/handoff/ design reference: README, theme tokens, screenshots
 specs/              Spec Kit spec, plan, contracts, tasks
 ```

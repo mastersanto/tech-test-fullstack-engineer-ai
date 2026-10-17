@@ -48,23 +48,23 @@ inside these.
 
 **⚠️ CRITICAL**: No story work can begin until this phase is complete.
 
-- [ ] T004 Rewrite `src/app/globals.css`: `@import "tailwindcss";` followed by the contents of
+- [X] T004 Rewrite `src/app/globals.css`: `@import "tailwindcss";` followed by the contents of
       `design/003/handoff/nocturne-theme.css` verbatim (both `@theme` blocks, the `rule-fade`
       and `row-rule` utilities, and the base rules). Add `@utility bg-page { background:
       radial-gradient(1200px 520px at 0% 0%, color-mix(in srgb, var(--color-accent-900) 70%,
       transparent), transparent 70%), var(--color-bg); }` (H§1). Remove the old
       `dialog::backdrop` rule, which the theme now provides.
-- [ ] T005 Rewrite `src/app/layout.tsx`: load `Inter` from `next/font/google` with
+- [X] T005 Rewrite `src/app/layout.tsx`: load `Inter` from `next/font/google` with
       `subsets: ["latin"], weight: ["400","500","600"], variable: "--font-inter"`; set
       `<html className={inter.variable}>` and `<body className="bg-page min-h-full text-text
       font-sans antialiased">`. Remove the Geist fonts, the `<header>`, the `<main>`
       max-width wrapper and every `dark:` class. The header moves to the shell (T007).
-- [ ] T006 Create `src/components/Toast.tsx` (`"use client"`): `ToastView({ message })`, fixed
+- [X] T006 Create `src/components/Toast.tsx` (`"use client"`): `ToastView({ message })`, fixed
       bottom 20 px, centred, `z-60`, `bg-surface rounded-md shadow-md px-3.5 py-2 text-[13px]`,
       Phosphor `CheckCircle` 16 px `text-accent`, `role="status" aria-live="polite"` (H§8).
       Also create a `useToast()` hook: `show(message)` replaces any current toast and
       auto-clears after 2600 ms. Clear the timer on replace and on unmount.
-- [ ] T007 Rewrite `src/components/DashboardShell.tsx` as the context provider and page frame.
+- [X] T007 Rewrite `src/components/DashboardShell.tsx` as the context provider and page frame.
       Export `DashboardContext` and `useDashboard()` with the value from data-model.md:
       `rail` (`{mode:"chat"} | {mode:"create"} | {mode:"edit", game}`), `openEditor(game?)`
       (sets rail; also sets `drawerOpen=true`), `closeEditor()`, `drawerOpen`/`setDrawerOpen`,
@@ -75,7 +75,7 @@ inside these.
       `openEditor()`), a full-width `rule-fade`, then a no-wrap flex row: `<section
       className="min-w-0 flex-1 px-6 pt-5 pb-8 flex flex-col gap-3.5">{children}</section>`
       and `<Rail />`. Render `<ToastView>` once.
-- [ ] T008 Rename `src/components/chat/ChatPanel.tsx` → `src/components/chat/Rail.tsx`
+- [X] T008 Rename `src/components/chat/ChatPanel.tsx` → `src/components/chat/Rail.tsx`
       (`git mv`), and make it read drawer state from `useDashboard()` instead of
       `useChatPanel()` (delete that hook and `ChatToggle`; "Ask AI" now lives in the shell
       header). Apply the rail geometry from H§2 at `xl`: `xl:sticky xl:top-0
@@ -84,7 +84,7 @@ inside these.
       var(--color-surface) 40%, var(--color-bg)))`, `shadow-sm`, no radius. Below `xl`, keep
       the 002 drawer classes with `shadow-lg`. For now render only `<ChatView>`; the editor
       comes in US2. Keep the `/#chat` handler, focus management and `inert`/`role` logic.
-- [ ] T009 Update `src/app/page.tsx` to render `<DashboardShell><Suspense
+- [X] T009 Update `src/app/page.tsx` to render `<DashboardShell><Suspense
       fallback=…><Catalog/></Suspense></DashboardShell>`, with `Catalog` unchanged for now.
       Run `npm run lint && npm run typecheck && npm test && npm run build`.
 
@@ -99,14 +99,14 @@ renders inside it.
 empty state.
 
 **Independent Test**: quickstart V1: matches screenshot 01 at 1470 × 900; Hollow Depths' bar
-is full; at least 12 rows plus the input at 1280 × 800; keyboard focus rings visible.
+is full; at least 11 rows plus the input at 1280 × 800; keyboard focus rings visible.
 
 ### Implementation for User Story 1
 
-- [ ] T010 [US1] In `src/lib/games/repository.ts` add `maxRevenue(): number`
+- [X] T010 [US1] In `src/lib/games/repository.ts` add `maxRevenue(): number`
       (`max(monthly_revenue_usd)` over the whole catalog, `0` when empty). Add a test in
       `tests/repository.test.ts`: seed → `142500`; empty db → `0`.
-- [ ] T011 [US1] Rewrite `src/components/games/GamesTable.tsx` as a client component
+- [X] T011 [US1] Rewrite `src/components/games/GamesTable.tsx` as a client component
       (`"use client"`), props `{ games: Game[]; maxRevenue: number }`. It reads
       `highlightIds`, `rail`, `openEditor` and `requestDelete` from `useDashboard()`. Per
       H§4: a wrapper `relative overflow-x-auto overflow-y-hidden`; `<table className="w-full
@@ -136,14 +136,14 @@ is full; at least 12 rows plus the input at 1280 × 800; keyboard focus rings vi
       - **Empty catalog** (`games.length===0`), per H§4: left-aligned, padding `40px 10px`,
         gap 6 px: h5 "No games yet", muted "Add your first game to start tracking the
         catalog.", secondary "Add game" calling `openEditor()`.
-- [ ] T012 [US1] Create `src/components/games/CatalogSection.tsx` (`"use client"`), props
+- [X] T012 [US1] Create `src/components/games/CatalogSection.tsx` (`"use client"`), props
       `{ games, maxRevenue, total }`. It renders the heading block (H§3: h3 "Games catalog" 25 px/500,
       `tracking-[-0.015em]`, mb 4 px; muted 13 px sub-copy), a toolbar row containing only the
       count for now ("12 games", 12 px, muted, `ml-auto`, tabular-nums), then `<GamesTable>`.
-- [ ] T013 [US1] Update `Catalog` in `src/app/page.tsx` to compute `games = listGames()`,
+- [X] T013 [US1] Update `Catalog` in `src/app/page.tsx` to compute `games = listGames()`,
       `maxRevenue()` and `countGames()`, and render `<CatalogSection …/>`. Keep `await
       connection()` first.
-- [ ] T014 [US1] Shared control styles in `src/app/globals.css`: add `@utility btn-primary`
+- [X] T014 [US1] Shared control styles in `src/app/globals.css`: add `@utility btn-primary`
       (1 px accent border, `text-accent`, transparent; hover `bg-accent/12`, active
       `bg-accent/22`, `rounded-md px-3 py-[7px] text-sm font-medium inline-flex items-center
       gap-1.5 whitespace-nowrap`, disabled `opacity-45`), `@utility btn-secondary` (1 px
@@ -152,7 +152,7 @@ is full; at least 12 rows plus the input at 1280 × 800; keyboard focus rings vi
       hover `border-text/45`, focus `border-accent outline-none`). Replace the equivalent inline
       classes written in T007, T011 and T012 with these utilities; later tasks use them
       directly.
-- [ ] T015 [US1] Run gates, then quickstart V1.1–V1.4 with a screenshot at 1470 × 900 compared
+- [X] T015 [US1] Run gates, then quickstart V1.1–V1.4 with a screenshot at 1470 × 900 compared
       side by side with `design/003/handoff/screenshots/01-default.png`. Fix visible
       deviations. Commit `feat: Nocturne theme, shell and dense catalog table`.
 
@@ -171,7 +171,7 @@ dialog.
 
 ### Implementation for User Story 2
 
-- [ ] T016 [P] [US2] Create `src/components/games/GameEditor.tsx` (`"use client"`), props
+- [X] T016 [P] [US2] Create `src/components/games/GameEditor.tsx` (`"use client"`), props
       `{ game?: Game }`. Port the value/parse/fetch logic from `GameForm.tsx` unchanged: the
       same `gameInputSchema`, `toInput`, POST/PUT and 400/404 handling. Layout per H§6:
       - **Header** (`px-3 pt-3 pb-2.5`, gap 6 px): a 30×30 ghost `ArrowLeft` button
@@ -188,7 +188,7 @@ dialog.
       - **On success**: `closeEditor()`, `router.refresh()`, `toast("Added {title}"` /
         `"Saved {title}")`. On 404: `toast("This game no longer exists.")`, `closeEditor()`,
         `router.refresh()`.
-- [ ] T017 [P] [US2] Create `src/components/games/DeleteDialog.tsx` (`"use client"`), rendered
+- [X] T017 [P] [US2] Create `src/components/games/DeleteDialog.tsx` (`"use client"`), rendered
       once by the shell. It opens a native `<dialog>` with `showModal()` while `pendingDelete`
       is set, and calls `clearDelete()` on its `close` event. Per H§7: `bg-surface
       rounded-[14px] shadow-lg p-[18px] w-[min(440px,100%)]`; title 17 px/500 "Delete
@@ -198,7 +198,7 @@ dialog.
       that game, remove the id from `highlightIds`, `toast("Deleted {title}")`,
       `router.refresh()`. On 404: close, `toast("This game no longer exists.")`,
       `router.refresh()`.
-- [ ] T018 [US2] In `src/components/chat/Rail.tsx`, render
+- [X] T018 [US2] In `src/components/chat/Rail.tsx`, render
       `<ChatView className={rail.mode==="chat" ? "" : "hidden"} … />` **always**, plus
       `{rail.mode!=="chat" && <GameEditor key={rail.mode==="edit" ? rail.game.id : "new"}
       game={rail.mode==="edit" ? rail.game : undefined}/>}`. The `key` resets the form when
@@ -206,10 +206,10 @@ dialog.
       dialog open → ignore; editor → `closeEditor()`; drawer → close. Closing the drawer
       while the editor shows also calls `closeEditor()` (spec edge case). Add a `className`
       prop to `ChatView`'s root.
-- [ ] T019 [US2] Mount `<DeleteDialog/>` in `src/components/DashboardShell.tsx`. Delete
+- [X] T019 [US2] Mount `<DeleteDialog/>` in `src/components/DashboardShell.tsx`. Delete
       `src/components/games/GameForm.tsx` and `src/components/games/DeleteGameButton.tsx`, and
       remove any remaining imports.
-- [ ] T020 [US2] Run gates, then quickstart V2.1–V2.4 in a browser and compare with screenshots
+- [X] T020 [US2] Run gates, then quickstart V2.1–V2.4 in a browser and compare with screenshots
       04, 05 and 06. Commit `feat: edit games in the rail with styled delete and toasts`.
 
 **Checkpoint**: All CRUD happens without a modal form; the chat survives.
@@ -225,7 +225,7 @@ Drift; Rating sort flips; reload keeps the view; "zzz" → "No games match" → 
 
 ### Tests and logic for User Story 3
 
-- [ ] T021 [P] [US3] Create `src/lib/games/catalog-view.ts` exactly per
+- [X] T021 [P] [US3] Create `src/lib/games/catalog-view.ts` exactly per
       `contracts/url-state.md`. Export `SORT_KEYS = ["title","revenue","downloads","rating"]`,
       type `CatalogView = { q: string; genre: string; sort: SortKey; dir: "asc"|"desc" }`,
       `defaultDir(sort)` (title → asc, else desc), `parseCatalogView(params: Record<string,
@@ -233,11 +233,11 @@ Drift; Rating sort flips; reload keeps the view; "zzz" → "No games match" → 
       chars; unknown `sort` → `revenue`; unknown `dir` → `defaultDir(sort)`),
       `serializeCatalogView(view)` (omit defaults; key order q, genre, sort, dir; returns
       `""` or `"?…"`), and `toggleSort(view, key)`.
-- [ ] T022 [P] [US3] Create `tests/catalog-view.test.ts` covering every row of the Examples
+- [X] T022 [P] [US3] Create `tests/catalog-view.test.ts` covering every row of the Examples
       table in `contracts/url-state.md`, the round trip parse(serialize(v)) = v, a 101-char
       `q` truncated, an array param, and `toggleSort` (same column flips; new numeric column →
       desc; title → asc).
-- [ ] T023 [US3] In `src/lib/games/repository.ts` add `queryCatalog(view: CatalogView):
+- [X] T023 [US3] In `src/lib/games/repository.ts` add `queryCatalog(view: CatalogView):
       Game[]` and `listGenres(): string[]`, per data-model.md. `queryCatalog` uses the escaped
       `LIKE %q%` on title OR developer (reuse `containsIgnoringCase`), `equalsIgnoringCase` on
       genre when non-empty, and ORDER BY the mapped column in `dir` then `title` asc.
@@ -248,11 +248,11 @@ Drift; Rating sort flips; reload keeps the view; "zzz" → "No games match" → 
 
 ### UI for User Story 3
 
-- [ ] T024 [US3] Update `Catalog` in `src/app/page.tsx` to take `searchParams` (the
+- [X] T024 [US3] Update `Catalog` in `src/app/page.tsx` to take `searchParams` (the
       `PageProps<"/">` prop), `await` it after `connection()`, `parseCatalogView`, and pass
       `games = queryCatalog(view)`, `total = countGames()`, `genres = listGenres()`,
       `maxRevenue()` and `view` to `CatalogSection`.
-- [ ] T025 [US3] Create `src/components/games/CatalogToolbar.tsx` (`"use client"`), props
+- [X] T025 [US3] Create `src/components/games/CatalogToolbar.tsx` (`"use client"`), props
       `{ view, genres, shown, total }`. Per H§3:
       - **Search**: the `input` utility with `MagnifyingGlass` 15 px at left 10 px
         (`opacity-55`), `pl-8`, `flex-[1_1_220px] max-w-[300px]`, placeholder "Search title or
@@ -264,16 +264,16 @@ Drift; Rating sort flips; reload keeps the view; "zzz" → "No games match" → 
       - **Count**: `ml-auto` 12 px muted tabular-nums, "N games" when `shown===total`, else
         "N of M games".
       The highlight tag slot is added in US4.
-- [ ] T026 [US3] Make the headers in `src/components/games/GamesTable.tsx` sortable. Each
+- [X] T026 [US3] Make the headers in `src/components/games/GamesTable.tsx` sortable. Each
       sortable `<th aria-sort=…>` contains a `<button>` that calls
       `router.replace(serializeCatalogView(toggleSort(view, key)) || "/", { scroll: false })`
       and shows `CaretUp` / `CaretDown` 12 px on the active column only. Add a `view` prop.
       Add the filtered empty state (H§4): "No games match" / "Try a different search or
       genre." / secondary "Clear filters", which replaces the URL keeping only `sort` and
       `dir`. Show it when `games.length===0 && total>0`; otherwise keep the catalog-empty state.
-- [ ] T027 [US3] Wire `CatalogToolbar` into `src/components/games/CatalogSection.tsx`,
+- [X] T027 [US3] Wire `CatalogToolbar` into `src/components/games/CatalogSection.tsx`,
       replacing the count-only row, and pass `view` to `GamesTable`.
-- [ ] T028 [US3] Run gates (the new tests must pass), then quickstart V3.1–V3.5 including
+- [X] T028 [US3] Run gates (the new tests must pass), then quickstart V3.1–V3.5 including
       "conversation intact after typing a search". Compare with screenshot 07. Commit
       `feat: search, genre filter and sortable columns kept in the URL`.
 
@@ -290,20 +290,20 @@ tag ✕ and New chat clear; streaming cursor; "Stopped — incomplete answer".
 
 ### Tests and logic for User Story 4
 
-- [ ] T029 [P] [US4] Create `src/lib/ai/references.ts`: `referencedGameIds(message:
+- [X] T029 [P] [US4] Create `src/lib/ai/references.ts`: `referencedGameIds(message:
       ChatMessage): number[]`. Walk `message.parts`; for each tool part with
       `state==="output-available"`, apply: `rank_games` → `output.games[0]?.id`;
       `count_games` → `output.games.map(g=>g.id)` (skip outputs with an `error` key);
       `get_games` → `output.found.map(g=>g.id)`; `search_games` →
       `output.games.map(g=>g.id)`. Return unique ids in first-seen order.
-- [ ] T030 [P] [US4] Create `tests/references.test.ts` with hand-built `ChatMessage` objects
+- [X] T030 [P] [US4] Create `tests/references.test.ts` with hand-built `ChatMessage` objects
       (cast as needed): a rank output with 3 games → only the first id; count → all;
       get_games found + not_found → found only; a count error output → `[]`; a pending
       (`input-available`) part → ignored; duplicates across two parts → deduplicated.
 
 ### UI for User Story 4
 
-- [ ] T031 [US4] Restyle `src/components/chat/MessageParts.tsx` (H§5). The `ToolChip` is
+- [X] T031 [US4] Restyle `src/components/chat/MessageParts.tsx` (H§5). The `ToolChip` is
       `inline-flex border border-accent-700 text-accent-300 rounded-sm px-[9px] py-[3px]
       text-[11px] gap-[7px]`, with `Check` 12 px when done, or a 10 px spinner (1.5 px
       `border-accent-700`, `border-t-accent-300`, `animate-spin [animation-duration:.8s]`)
@@ -312,7 +312,7 @@ tag ✕ and New chat clear; streaming cursor; "Stopped — incomplete answer".
       are 13 px/1.6 `text-neutral-200 whitespace-pre-wrap [text-wrap:pretty]`. Accept a
       `streaming` prop: when true, append a 6×14 px `bg-accent rounded-[1px]
       shadow-[0_0_8px_var(--color-accent)] animate-blink` cursor after the last text part.
-- [ ] T032 [US4] Restyle `src/components/chat/ChatView.tsx` (H§5), keeping all behaviour:
+- [X] T032 [US4] Restyle `src/components/chat/ChatView.tsx` (H§5), keeping all behaviour:
       - **Header**: `Sparkle` 16 px accent and h5 "Assistant" 16 px/500. On the right, a ghost
         "New chat" (`ArrowCounterClockwise` 12 px, 12 px text) shown only when
         `messages.length>0`; it calls `stop()` and then `setMessages([])`. Below, the
@@ -338,14 +338,14 @@ tag ✕ and New chat clear; streaming cursor; "Stopped — incomplete answer".
       - **References**: add a prop `onReferences(ids: number[])`. In an effect keyed on the
         last assistant message's parts, call `onReferences(referencedGameIds(last))`. When a
         user message is sent, call `onReferences([])` first.
-- [ ] T033 [US4] Wire highlights. In `src/components/chat/Rail.tsx`, pass
+- [X] T033 [US4] Wire highlights. In `src/components/chat/Rail.tsx`, pass
       `onReferences={setHighlightIds}` to `ChatView`. In
       `src/components/games/CatalogToolbar.tsx`, render the tag when `highlightIds.length>0`
       (H§3): `border border-accent text-accent text-[11px] rounded-[6px] pl-[9px] pr-1
       py-[3px] gap-1.5`, `Sparkle` 12 px, "{n} from last answer", and a ghost `X` button
       (`aria-label="Clear highlight"`) → `setHighlightIds([])`. `GamesTable` already renders
       row highlights (T011).
-- [ ] T034 [US4] Run gates (the references tests must pass), then quickstart V4.1–V4.3 with
+- [X] T034 [US4] Run gates (the references tests must pass), then quickstart V4.1–V4.3 with
       the API key. Compare with screenshots 02 and 03. Commit
       `feat: highlight games from the last answer; restyled chat with New chat`.
 
@@ -355,25 +355,25 @@ tag ✕ and New chat clear; streaming cursor; "Stopped — incomplete answer".
 
 ## Phase 7: Polish & Cross-Cutting Concerns
 
-- [ ] T035 Rewrite the scratch Playwright suite
+- [X] T035 Rewrite the scratch Playwright suite
       (`$SCRATCHPAD/pw/panel-check.mjs` → `$SCRATCHPAD/pw/nocturne-check.mjs`, outside the
       repo) for the new UI. Keep every 002 check that still applies: conversation kept after
       editing (now through the rail editor), drawer below 1280 px, Escape layering
       (dialog → editor → drawer), `/chat` redirect, no horizontal page scroll at
-      768/1024/1280/1440. Add V1.3 (≥ 12 rows at 1280×800), V3 (search, genre, sort,
+      768/1024/1280/1440. Add V1.3 (≥ 11 rows at 1280×800), V3 (search, genre, sort,
       reload, invalid URL), V4 (1/7/2 highlights), the selected-row subline contrast
       ≥ 4.5 measured from computed colours, and screenshots of states S1–S7 at 1470 × 900.
       Run it against `next start` and fix failures.
-- [ ] T036 Compare the S1–S7 screenshots side by side with `design/003/handoff/screenshots/`
+- [X] T036 Compare the S1–S7 screenshots side by side with `design/003/handoff/screenshots/`
       01–07 (SC-001), and fix visible deviations.
-- [ ] T037 Rerun the 10 scripted questions with `$SCRATCHPAD/chat-eval.mjs` (SC-008: 10/10).
-- [ ] T038 [P] Update `README.md`: the "What's inside" section for Nocturne (dark theme,
+- [X] T037 Rerun the 10 scripted questions with `$SCRATCHPAD/chat-eval.mjs` (SC-008: 10/10).
+- [X] T038 [P] Update `README.md`: the "What's inside" section for Nocturne (dark theme,
       rail with Assistant or editor, search, filter, sort, highlights); add the URL params to
       the API/usage section; add to trade-offs "dark-only by design" and "highlights from a
       count cover at most 20 games"; update the layout tree with the new files.
-- [ ] T039 [P] Update `AI_WORKFLOW.md`: Running log entries for each phase (including any
+- [X] T039 [P] Update `AI_WORKFLOW.md`: Running log entries for each phase (including any
       **[wrong]** moments), and a prompt entry for the Claude Design handoff.
-- [ ] T040 Final gates `npm run lint && npm run typecheck && npm test && npm run build`;
+- [X] T040 Final gates `npm run lint && npm run typecheck && npm test && npm run build`;
       commit `docs: README and workflow notes for the Nocturne redesign`. Do **not** push
       (the PR is already open; pushing updates it, so confirm with the user first).
 

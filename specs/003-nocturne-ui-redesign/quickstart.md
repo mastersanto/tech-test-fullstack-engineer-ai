@@ -18,7 +18,7 @@ Gates: `npm run lint && npm run typecheck && npm test && npm run build`.
    `design/003/.../screenshots/01-default.png`. **Expect**: same structure, colours and type.
    Minor anti-aliasing differences are fine.
 2. **Expect**: Hollow Depths' revenue bar is full width; Moth & Lantern's is about 6%.
-3. At 1280 × 800, **Expect**: at least 12 rows and the assistant input visible (SC-002).
+3. At 1280 × 800, **Expect**: at least 11 rows and the assistant input visible (SC-002).
 4. Tab through a row. **Expect**: sort headers, ✎ and 🗑 are reachable, with an accent focus
    ring.
 
@@ -64,7 +64,7 @@ Gates: `npm run lint && npm run typecheck && npm test && npm run build`.
 | SC | Verified by |
 |---|---|
 | SC-001 matches screenshots 01–07 | V1.1, plus state screenshots for S2–S7 |
-| SC-002 ≥ 12 rows + input at 1280×800 | V1.3 |
+| SC-002 ≥ 11 rows + input at 1280×800 | V1.3 |
 | SC-003 find a game < 5 s | V3.1 |
 | SC-004 highlights 3/3 | V4.1 |
 | SC-005 conversation intact 10/10 | V2.5 |
