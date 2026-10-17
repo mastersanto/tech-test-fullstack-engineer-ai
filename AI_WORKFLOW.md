@@ -235,3 +235,31 @@ to the first text token, and the answer.
 - While generating tasks, the first draft of T007 told the server-component `page.tsx` to
   call a client hook, then corrected itself in the same sentence. Caught on review and
   rewritten around a client `DashboardShell` wrapper before implementation.
+- **Implementation.** One `ChatPanel` (sticky column from 1024 px, off-canvas drawer below),
+  a client `DashboardShell` that keeps it outside the catalog's `<Suspense>`, a `/chat` →
+  `/#chat` redirect in `next.config.ts`, and the nav removed. No server, API or assistant
+  changes.
+- **[wrong] A bug the plan missed.** `ChatView` auto-scrolled with
+  `scrollIntoView()`, which scrolls *every* scrollable ancestor. Inside a side panel, each
+  streamed token would have yanked the whole page. Spotted while reading the component before
+  embedding it; fixed by setting the list's own `scrollTop`.
+- **Real browser testing this time.** For 001, the dialog checks were left for a manual
+  click-through because there was no browser tool. Here the assistant found Playwright's
+  Chromium already cached in `~/.cache/ms-playwright`, installed Playwright in a scratch
+  directory (not the project), and wrote a 35-check script covering quickstart V1–V4. The
+  script ran against `next start` with real chat calls: side-by-side geometry at 1280×800
+  (806 px table, 400 px panel, 10 rows and the input visible), conversation kept through
+  hide/show, a dashboard edit, resizing and drawer open/close, Escape and focus return,
+  backdrop and × closing, and the `/chat` redirect at both widths.
+- **[wrong] The script caught a regression, and my first diagnosis was wrong.** After
+  tightening table padding, the 768 px "no horizontal page scroll" check failed. The first fix
+  (an explicit `grid-cols-1`) didn't help. Measuring elements past the viewport showed the
+  real cause: Tailwind's `sr-only` labels ("Actions", "Delete …") are `position: absolute`.
+  The table's `overflow-x-auto` wrapper had no `position: relative`, so they escaped the
+  scroll container and widened the page. This had been latent since 001. One word fixed it
+  (`relative`), and all 35 checks passed.
+- Reran the 10 scripted questions against the new build: still 10/10, with lookup chips at
+  0.75–2.07 s.
+- Known limit, left as is: at 1024–1279 px the table (~550 px) scrolls inside its own box,
+  so the Rating and Actions columns need a sideways scroll there. Allowed by the spec, but
+  flagged to the user.

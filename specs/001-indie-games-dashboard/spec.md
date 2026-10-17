@@ -222,7 +222,9 @@ status, including error cases.
 **Navigation and presentation**
 
 - **FR-022**: Operators MUST be able to switch between the dashboard view and the chat view
-  from anywhere in the application in one action.
+  from anywhere in the application in one action. *Superseded by
+  [002-dashboard-chat-panel](../002-dashboard-chat-panel/spec.md): the chat moved onto the
+  dashboard.*
 - **FR-023**: Monetary values MUST be displayed as US dollars with thousands separators;
   download counts MUST use thousands separators; ratings MUST be shown to one decimal place.
 - **FR-024**: The application MUST be usable on a laptop-sized screen without horizontal

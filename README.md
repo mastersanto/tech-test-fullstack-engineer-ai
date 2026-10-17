@@ -32,14 +32,20 @@ Other scripts: `npm test` (Vitest), `npm run lint`, `npm run typecheck`, `npm ru
 
 ## What's inside
 
-**Dashboard (`/`)**: a table of every game, with add, edit and delete in a dialog.
-Validation runs in the browser and again in the API, with the same schema and messages per
-field. Deleting asks for confirmation.
+Everything is on one page (`/`): the catalog table on the left and the assistant beside it,
+so you can check every answer against the data you can see.
 
-**Chat (`/chat`)**: plain-language questions with streamed answers. Each lookup the assistant
+**Catalog table**: every game, with add, edit and delete in a dialog. Validation runs in the
+browser and again in the API, with the same schema and messages per field. Deleting asks for
+confirmation.
+
+**Assistant**: plain-language questions with streamed answers. Each lookup the assistant
 makes appears as a chip above the answer ("Ranked games · metric: monthly_revenue_usd"), so
 you can see where every number came from. Follow-up questions keep the context. Unknown games
 are reported as not found instead of invented, and off-topic questions are declined.
+From 1024 px wide it's a sticky side panel you can hide; on narrower screens, "Ask AI" opens it
+as a drawer. Editing games never resets the conversation. `/chat` redirects to `/#chat`,
+which opens the assistant.
 
 **REST API**
 
@@ -111,8 +117,8 @@ Stack: Next.js 16 (App Router, Cache Components), React 19, Tailwind 4, Vercel A
 ## Project layout
 
 ```
-src/app/            pages (/ and /chat) and API routes
-src/components/     games table and form, chat view, nav
+src/app/            the dashboard page and API routes
+src/components/     dashboard shell, games table and form, chat panel and view
 src/lib/db/         Drizzle schema, SQLite client and seed data
 src/lib/games/      repository (all queries) and number formatting
 src/lib/ai/         model, tools and agent
