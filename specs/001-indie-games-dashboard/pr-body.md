@@ -2,8 +2,10 @@
 
 - **Name:** Jorge Sandoval
 - **Email:** jorgeivansandoval@gmail.com
-- **Time spent:** about 1 hour of implementation by commit timestamps (16:51–17:50), plus
-  the Spec Kit planning session before the first commit
+- **Time spent:** about 2 hours by commit timestamps (16:51–18:55): ~1 h for the core
+  assessment and the chat panel (16:51–17:50), ~30 min for the Nocturne redesign
+  (18:27–18:55, after the design export), plus the initial Spec Kit planning session before
+  the first commit
 
 ## What I built
 
