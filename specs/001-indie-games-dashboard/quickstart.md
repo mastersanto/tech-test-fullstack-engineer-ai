@@ -75,8 +75,8 @@ Open `/chat` and ask, in one conversation:
 
 Also verify while watching:
 
-- First words of any reply appear **within 3 s** of sending (SC-003); text arrives
-  incrementally, not in one block.
+- A lookup chip or the first words of a reply appear **within 3 s** of sending (SC-003);
+  text is shown as it streams in.
 - Edit Hollow Depths' revenue to `50000` on the dashboard, return to chat, re-ask Q1.
   **Expect**: Stardust Farm ($98,000) — no restart (SC-004).
 - Remove `ANTHROPIC_API_KEY` from `.env.local`, restart, send a message. **Expect**: banner
@@ -105,7 +105,7 @@ expectations) pass against an in-memory database.
 |---|---|
 | SC-001 add a game < 60 s | S1 step 3, timed |
 | SC-002 10/10 correct answers | S2 table |
-| SC-003 first token < 3 s, incremental | S2 observation |
+| SC-003 first visible response (chip or text) < 3 s | S2 observation |
 | SC-004 edit reflected next answer | S2 edit check |
 | SC-005 no invalid records via UI or API | S1 step 2 + S3 validation call |
 | SC-006 fresh checkout → running < 5 min, Node + key only | Run section |

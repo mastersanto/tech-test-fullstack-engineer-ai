@@ -93,8 +93,10 @@ Stack: Next.js 16 (App Router, Cache Components), React 19, Tailwind 4, Vercel A
   an emptied catalog stays empty after a restart.
 - **Node 22+ required.** `better-sqlite3` 13 needs it, and ships prebuilt binaries so nothing
   compiles on install.
-- **Claude Opus 5.5 by default, at low effort.** Low effort keeps the first token fast for
-  simple lookups. Set `ANTHROPIC_MODEL` to use a cheaper model.
+- **Claude Opus 5.5 by default, at low effort.** A lookup chip appears within about 1–2 s,
+  but answer text starts after 2.5–4.5 s, because each answer takes two model calls
+  (choose a lookup, then reply). Set `ANTHROPIC_MODEL=claude-sonnet-5-5` or
+  `claude-haiku-5-5` for faster, cheaper replies.
 - **Chat history is per session.** It's held in the browser and lost on reload.
 - **Next.js Cache Components.** better-sqlite3 is synchronous, so pages and `GET` routes call
   `connection()` before reading. Without that, Next would prerender them at build time and

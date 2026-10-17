@@ -19,6 +19,13 @@
   → A: No. Seed only on first run, when no data store exists yet; an emptied catalog stays
   empty after restart.
 
+### Session 2026-10-17 (post-implementation)
+
+- Q: Live testing showed a lookup-then-answer reply needs two model round trips, so text
+  starts at 2.6–4.4 s while the lookup indicator appears at 0.9–2.2 s. What must appear within
+  3 seconds? → A: The first visible response, either the lookup indicator or text. Text
+  latency is documented as a trade-off.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Manage the Games Catalog (Priority: P1)
@@ -79,8 +86,8 @@ revenue question again, and verify the answer reflects the edit.
 3. **Given** two games exist, **When** the operator asks to compare their revenue, **Then**
    the assistant reports both figures and states which is higher and by how much.
 4. **Given** the operator sends a question, **When** the assistant begins replying, **Then**
-   the first words of the reply are visible within 3 seconds and the rest of the text
-   appears incrementally.
+   a first visible response (a lookup indicator or the first words of the reply) appears
+   within 3 seconds and the text appears incrementally as it is generated.
 5. **Given** the operator has just changed a game's data in the dashboard, **When** they
    ask a question whose answer depends on that field, **Then** the answer uses the new value.
 6. **Given** the assistant is answering, **When** it needs catalog data, **Then** the chat
@@ -240,8 +247,9 @@ status, including error cases.
 - **SC-002**: On a scripted set of 10 questions covering the three required question types
   against the seeded catalog, the assistant gives the factually correct answer 10 out of 10
   times.
-- **SC-003**: The first visible words of an assistant reply appear within 3 seconds of
-  sending a question, and the remainder arrives incrementally rather than in one block.
+- **SC-003**: A first visible response to a question (a lookup indicator or the first words
+  of the reply) appears within 3 seconds of sending it, and reply text is shown as it is
+  generated rather than after the whole reply is complete.
 - **SC-004**: A change made in the dashboard is reflected in the assistant's very next
   answer, with no restart or manual refresh.
 - **SC-005**: Every invalid form submission is blocked and shows a field-level message;

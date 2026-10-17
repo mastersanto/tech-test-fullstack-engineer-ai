@@ -39,8 +39,8 @@ browser at `http://localhost:3000`. No deployment.
 
 **Project Type**: Web application — one Next.js project serving UI and API together.
 
-**Performance Goals**: First visible assistant token < 3 s (SC-003) — achieved with
-`effort: 'low'` on the Anthropic provider; dashboard with 100 games renders < 2 s (SC-007);
+**Performance Goals**: First visible response (lookup chip or text) < 3 s (SC-003), helped by
+`effort: 'low'` on the Anthropic provider; measured chips at 0.9–2.2 s, text at 2.6–4.4 s; dashboard with 100 games renders < 2 s (SC-007);
 REST calls complete < 100 ms locally (synchronous SQLite, single table).
 
 **Constraints**: 2–3 hour time box; no auth, deployment, or production error handling; no

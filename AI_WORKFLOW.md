@@ -210,7 +210,10 @@ to the first text token, and the answer.
 - **[wrong] Markdown in a plain-text UI.** Four answers used `**bold**`, which the chat
   displays literally. Fixed with one prompt rule ("plain text, `- ` lists only"), and those
   questions were rerun to confirm.
-- **SC-003 latency only partly met.** The lookup chip appears at 0.9–2.2 s, but the first
-  words of text arrive at 2.6–4.4 s. That's slower than the 3 s target, because a tool
-  answer needs two model round trips (pick a tool, then answer) and the text comes in one
-  short burst at the end.
+- **SC-003 latency only partly met, so I amended the criterion.** The lookup chip appears at
+  0.9–2.2 s, but the first words of text arrive at 2.6–4.4 s, because a tool answer needs
+  two model round trips (pick a tool, then answer). The assistant offered three options:
+  reword the criterion to "first visible response", switch to a faster default model, or
+  leave it as is. I chose to reword it. The chip gives feedback well within 3 s, Opus stays
+  the default for answer quality, and the change is recorded as a post-implementation
+  clarification in the spec. `ANTHROPIC_MODEL` remains the lever if text latency matters.

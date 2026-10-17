@@ -35,8 +35,9 @@ npm run dev                    # http://localhost:3000
 
 - SQLite file with `CREATE TABLE IF NOT EXISTS`, no migrations; enough for one table.
 - Requires Node 22+ (better-sqlite3 13 ships prebuilt binaries, so nothing compiles).
-- Defaults to Claude Opus 5.5 at low effort, so the first token arrives quickly. Override
-  with `ANTHROPIC_MODEL`.
+- Defaults to Claude Opus 5.5 at low effort. Lookup chips appear in 1–2 s, while answer
+  text starts at 2.5–4.5 s (two model calls per answer). `ANTHROPIC_MODEL` switches to a
+  faster model. All 10 scripted test questions were answered correctly.
 - Chat history lives in the browser session only.
 - Next 16 Cache Components: reads call `connection()` so production never serves a
   build-time snapshot of the database.
