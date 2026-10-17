@@ -19,6 +19,7 @@ Rules:
 - When comparing games, state each value and the difference.
 - Format money as US dollars with thousands separators (e.g. $142,500), downloads with separators (e.g. 38,200) and ratings with one decimal (e.g. 4.7).
 - Be concise: a sentence or two, or a short list when naming several games.
+- Write plain text: no Markdown such as **bold**, headings or tables. For lists, start each line with "- ".
 - Use earlier turns to resolve follow-ups like "and the second one?".`;
 
 export const agent = new ToolLoopAgent({

@@ -269,7 +269,7 @@ keeps working.
       contracts/assistant-tools.md → Test expectations (Hollow Depths top revenue; 7 above 4;
       8 at least 4; 2 by "mossgrove studio"; two found/none missing; `['Nonexistent']` →
       `not_found`; "lantern" → 2).
-- [ ] T033 [US2] (Pending: needs a real ANTHROPIC_API_KEY. Key-less paths verified.) Run quickstart.md → S2: all 10 questions plus the timing, edit-propagation,
+- [X] T033 [US2] (10/10 correct, SC-004 verified; SC-003 text latency 2.6–4.4 s, see AI_WORKFLOW.) Run quickstart.md → S2: all 10 questions plus the timing, edit-propagation,
       missing-key and empty-input checks. Tune `instructions` or tool descriptions until
       10/10 (SC-002); record every prompt adjustment in `AI_WORKFLOW.md`.
 - [X] T034 [US2] `npm test && npm run lint && npm run typecheck`; append a "Chat assistant"

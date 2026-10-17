@@ -193,3 +193,24 @@ before any code was written.
   because a prerendered `GET` would only go stale in production. The list went from 12 to 13
   after a create, so it is not frozen at build time. All 13 status codes and bodies matched
   `contracts/games-api.md`.
+
+### Live chat evaluation (T033)
+
+Once the API key was in `.env.local`, the assistant wrote a small Node script that plays the
+10 scripted questions from `quickstart.md` as one conversation against `next start`. It
+parses the SSE stream and records the tool calls, the time to the first lookup chip, the time
+to the first text token, and the answer.
+
+- **10/10 factually correct (SC-002).** Every answer came from a tool call. The follow-up
+  "And at least 4?" switched `op` from `gt` to `gte` and returned 8. A missing game was
+  reported as not found. The off-topic weather question was declined with no tool call.
+  "Lantern" made the assistant ask which of the two matches was meant.
+- **SC-004:** after `PUT` set Hollow Depths' revenue to $50,000, the next "most revenue"
+  answer was Stardust Farm at $98,000, with no restart.
+- **[wrong] Markdown in a plain-text UI.** Four answers used `**bold**`, which the chat
+  displays literally. Fixed with one prompt rule ("plain text, `- ` lists only"), and those
+  questions were rerun to confirm.
+- **SC-003 latency only partly met.** The lookup chip appears at 0.9–2.2 s, but the first
+  words of text arrive at 2.6–4.4 s. That's slower than the 3 s target, because a tool
+  answer needs two model round trips (pick a tool, then answer) and the text comes in one
+  short burst at the end.
