@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { createDb, seedGames } from "@/lib/db/client";
 import { gameInputSchema, type GameInput } from "@/lib/db/schema";
+import { DEFAULT_VIEW, type CatalogView } from "@/lib/games/catalog-view";
 import { createRepository, type Repository } from "@/lib/games/repository";
 
 const newGame: GameInput = {
@@ -104,5 +105,48 @@ describe("validation", () => {
   it("strips unknown and system keys", () => {
     const parsed = gameInputSchema.parse({ ...newGame, id: 99, created_at: "x", extra: true });
     expect(parsed).toEqual(newGame);
+  });
+});
+
+describe("catalog view queries", () => {
+  const view = (overrides: Partial<CatalogView> = {}): CatalogView => ({ ...DEFAULT_VIEW, ...overrides });
+
+  it("defaults to revenue, highest first", () => {
+    const titles = repo.queryCatalog(view()).map((g) => g.title);
+    expect(titles).toHaveLength(12);
+    expect(titles[0]).toBe("Hollow Depths");
+    expect(titles.at(-1)).toBe("Moth & Lantern");
+  });
+
+  it("searches title or developer", () => {
+    expect(repo.queryCatalog(view({ q: "lantern" })).map((g) => g.title).sort()).toEqual(["Cinder & Salt", "Moth & Lantern"]);
+  });
+
+  it("filters by genre ignoring case and combines with search", () => {
+    expect(repo.queryCatalog(view({ genre: "racing" })).map((g) => g.title)).toEqual(["Neon Drift"]);
+    expect(repo.queryCatalog(view({ genre: "racing", q: "lantern" }))).toHaveLength(0);
+  });
+
+  it("sorts by any column in either direction", () => {
+    expect(repo.queryCatalog(view({ sort: "rating", dir: "desc" }))[0].title).toBe("Cinder & Salt");
+    expect(repo.queryCatalog(view({ sort: "rating", dir: "asc" }))[0].title).toBe("Skyline Siege");
+    expect(repo.queryCatalog(view({ sort: "title", dir: "asc" }))[0].title).toBe("Cinder & Salt");
+    expect(repo.queryCatalog(view({ sort: "downloads", dir: "desc" }))[0].title).toBe("Stardust Farm");
+  });
+
+  it("treats LIKE wildcards literally", () => {
+    expect(repo.queryCatalog(view({ q: "%" }))).toHaveLength(0);
+  });
+
+  it("lists distinct genres A–Z", () => {
+    const genres = repo.listGenres();
+    expect(genres).toHaveLength(12);
+    expect(genres[0]).toBe("Adventure");
+    expect([...genres].sort((a, b) => a.localeCompare(b))).toEqual(genres);
+  });
+
+  it("reports the highest revenue, or 0 when empty", () => {
+    expect(repo.maxRevenue()).toBe(142500);
+    expect(createRepository(createDb(":memory:")).maxRevenue()).toBe(0);
   });
 });
