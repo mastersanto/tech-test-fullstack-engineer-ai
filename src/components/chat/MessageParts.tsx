@@ -1,5 +1,6 @@
 "use client";
 
+import { Check } from "@phosphor-icons/react";
 import { getToolName, isTextUIPart, isToolUIPart } from "ai";
 import type { ChatMessage } from "@/lib/ai/agent";
 
@@ -22,47 +23,49 @@ function describeInput(input: unknown): string {
 function ToolChip({ part }: { part: ToolPart }) {
   const name = getToolName(part);
   const labels = TOOL_LABELS[name] ?? { pending: `Running ${name}`, done: `Ran ${name}` };
-  const details = describeInput(part.input);
-
-  if (part.state === "output-error") {
-    return (
-      <div className="flex items-center gap-2 rounded-md border border-red-200 bg-red-50 px-2.5 py-1 text-xs text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300">
-        <span aria-hidden>⚠</span>
-        <span className="font-medium">{labels.pending} failed</span>
-        <span className="truncate">{part.errorText}</span>
-      </div>
-    );
-  }
-
   const done = part.state === "output-available";
+  const failed = part.state === "output-error";
+  const details = failed ? part.errorText : describeInput(part.input);
+
   return (
-    <div className="flex max-w-full items-center gap-2 rounded-md border border-zinc-200 bg-zinc-50 px-2.5 py-1 text-xs text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+    <div className="inline-flex max-w-full items-center gap-[7px] self-start rounded-sm border border-accent-700 px-[9px] py-[3px] text-[11px] text-accent-300">
       {done ? (
-        <span aria-hidden className="text-emerald-600 dark:text-emerald-400">✓</span>
+        <Check size={12} aria-hidden />
       ) : (
-        <span aria-hidden className="size-3 animate-spin rounded-full border-2 border-zinc-300 border-t-zinc-600" />
+        !failed && (
+          <span aria-hidden className="size-2.5 shrink-0 animate-spin rounded-full border-[1.5px] border-accent-700 border-t-accent-300 [animation-duration:.8s]" />
+        )
       )}
-      <span className="font-medium">{done ? labels.done : `${labels.pending}…`}</span>
-      {details && <span className="truncate font-mono text-zinc-500 dark:text-zinc-400">{details}</span>}
+      <span className="shrink-0 font-medium">{failed ? `${labels.pending} failed` : done ? labels.done : `${labels.pending}…`}</span>
+      {details && <span className="truncate font-mono opacity-75">{details}</span>}
     </div>
   );
 }
 
-/** Text parts as paragraphs; tool calls as lookup chips so the user sees where answers come from. */
-export function MessageParts({ message }: { message: ChatMessage }) {
+const Cursor = () => (
+  <span
+    aria-hidden
+    className="ml-0.5 inline-block h-3.5 w-1.5 translate-y-0.5 animate-blink rounded-[1px] bg-accent shadow-[0_0_8px_var(--color-accent)]"
+  />
+);
+
+/** Lookups as outlined chips, then the answer text; a blinking cursor while it streams. */
+export function MessageParts({ message, streaming = false }: { message: ChatMessage; streaming?: boolean }) {
+  const lastText = message.parts.findLastIndex((part) => isTextUIPart(part) && part.text.trim());
   return (
-    <div className="flex flex-col gap-2">
+    <>
       {message.parts.map((part, index) => {
         if (isToolUIPart(part)) return <ToolChip key={part.toolCallId} part={part} />;
         if (isTextUIPart(part) && part.text.trim()) {
           return (
-            <p key={index} className="whitespace-pre-wrap leading-relaxed">
+            <p key={index} className="text-[13px]/[1.6] whitespace-pre-wrap text-neutral-200 [text-wrap:pretty]">
               {part.text}
+              {streaming && index === lastText && <Cursor />}
             </p>
           );
         }
         return null;
       })}
-    </div>
+    </>
   );
 }

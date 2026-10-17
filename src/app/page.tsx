@@ -1,29 +1,32 @@
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { DashboardShell } from "@/components/DashboardShell";
-import { GamesTable } from "@/components/games/GamesTable";
+import { CatalogSection } from "@/components/games/CatalogSection";
+import { parseCatalogView } from "@/lib/games/catalog-view";
 import { getRepository } from "@/lib/games/repository";
 
-export default function DashboardPage() {
+export default function DashboardPage({ searchParams }: PageProps<"/">) {
   return (
     <DashboardShell>
-      <Suspense fallback={<p className="text-sm text-zinc-500">Loading games…</p>}>
-        <Catalog />
+      <Suspense fallback={<p className="text-[13px] text-muted">Loading games…</p>}>
+        <Catalog searchParams={searchParams} />
       </Suspense>
     </DashboardShell>
   );
 }
 
-async function Catalog() {
+async function Catalog({ searchParams }: { searchParams: PageProps<"/">["searchParams"] }) {
   // better-sqlite3 is synchronous: without this the query would run once at build time.
   await connection();
-  const games = getRepository().listGames();
+  const view = parseCatalogView(await searchParams);
+  const repository = getRepository();
   return (
-    <div className="flex flex-col gap-2">
-      <GamesTable games={games} />
-      <p className="text-xs text-zinc-500">
-        {games.length} {games.length === 1 ? "game" : "games"}
-      </p>
-    </div>
+    <CatalogSection
+      games={repository.queryCatalog(view)}
+      total={repository.countGames()}
+      genres={repository.listGenres()}
+      maxRevenue={repository.maxRevenue()}
+      view={view}
+    />
   );
 }

@@ -1,129 +1,103 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { X } from "@phosphor-icons/react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
+import { RAIL_DOCKED_QUERY, useDashboard } from "@/components/DashboardShell";
+import { GameEditor } from "@/components/games/GameEditor";
 import { ChatView } from "./ChatView";
 
-const WIDE_QUERY = "(min-width: 1280px)";
-
-/** Drawer state shared by the panel and the "Ask AI" button. Not remembered across reloads. */
-export function useChatPanel() {
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const askButtonRef = useRef<HTMLButtonElement>(null);
-  return { drawerOpen, setDrawerOpen, inputRef, askButtonRef };
-}
-
-export type ChatPanelState = ReturnType<typeof useChatPanel>;
-
 function subscribeToWidth(onChange: () => void) {
-  const query = window.matchMedia(WIDE_QUERY);
+  const query = window.matchMedia(RAIL_DOCKED_QUERY);
   query.addEventListener("change", onChange);
   return () => query.removeEventListener("change", onChange);
 }
 
-/** Only used for ARIA/inert attributes; the chat itself is never mounted or unmounted by width. */
+/** Only used for ARIA/inert attributes; nothing is mounted or unmounted by width. */
 function useIsWide() {
   return useSyncExternalStore(
     subscribeToWidth,
-    () => window.matchMedia(WIDE_QUERY).matches,
+    () => window.matchMedia(RAIL_DOCKED_QUERY).matches,
     () => true,
   );
 }
 
-const quietButton =
-  "rounded-md px-2 py-1 text-xs font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100";
-
 /**
- * The single chat instance on the page. From 1280 px it is a sticky column beside the table,
- * always shown; below that it is a drawer over the page. Both are CSS states of the same
- * element, so the conversation survives table edits and resizing across the breakpoint.
+ * The right rail: the Assistant, or the game editor over it. From 1280 px it is docked
+ * beside the catalog; below that it is a drawer. ChatView is always mounted (hidden while the
+ * editor shows) so the conversation, and any reply still streaming, survives.
  */
-export function ChatPanel({ state }: { state: ChatPanelState }) {
-  const { drawerOpen, setDrawerOpen, inputRef, askButtonRef } = state;
+export function Rail() {
+  const { rail, closeEditor, drawerOpen, setDrawerOpen, setHighlightIds, chatInputRef, askButtonRef } = useDashboard();
   const isWide = useIsWide();
   const wasOpen = useRef(false);
+  const editing = rail.mode !== "chat";
 
-  // Focus the input when the drawer opens; return focus to "Ask AI" when it closes.
+  // Focus the chat input when the drawer opens on the assistant; return focus to "Ask AI" when it closes.
   useEffect(() => {
-    if (drawerOpen) inputRef.current?.focus();
-    else if (wasOpen.current) askButtonRef.current?.focus();
+    if (drawerOpen && !editing) chatInputRef.current?.focus();
+    else if (!drawerOpen && wasOpen.current) askButtonRef.current?.focus();
     wasOpen.current = drawerOpen;
-  }, [drawerOpen, inputRef, askButtonRef]);
+  }, [drawerOpen, editing, chatInputRef, askButtonRef]);
 
-  // Escape closes the drawer, unless a form dialog is open: that Escape belongs to the dialog.
+  // Escape closes one layer at a time: a dialog (it handles itself), then the editor, then the drawer.
   useEffect(() => {
-    if (!drawerOpen) return;
     function onKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape" && !document.querySelector("dialog[open]")) setDrawerOpen(false);
+      if (event.key !== "Escape" || document.querySelector("dialog[open]")) return;
+      if (editing) closeEditor();
+      else if (drawerOpen) setDrawerOpen(false);
     }
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
-  }, [drawerOpen, setDrawerOpen]);
+  }, [editing, closeEditor, drawerOpen, setDrawerOpen]);
 
   // /chat redirects to /#chat: reveal the assistant, then drop the hash.
   useEffect(() => {
     if (window.location.hash !== "#chat") return;
-    history.replaceState(null, "", window.location.pathname);
-    if (window.matchMedia(WIDE_QUERY).matches) inputRef.current?.focus();
+    history.replaceState(null, "", window.location.pathname + window.location.search);
+    if (window.matchMedia(RAIL_DOCKED_QUERY).matches) chatInputRef.current?.focus();
     else setDrawerOpen(true);
-  }, [inputRef, setDrawerOpen]);
+  }, [chatInputRef, setDrawerOpen]);
+
+  function closeDrawer() {
+    setDrawerOpen(false);
+    closeEditor(); // reopening the drawer starts on the assistant
+  }
 
   const isDrawer = !isWide;
 
   return (
     <>
-      {drawerOpen && (
-        <div aria-hidden className="fixed inset-0 z-30 bg-black/40 xl:hidden" onClick={() => setDrawerOpen(false)} />
-      )}
+      {drawerOpen && <div aria-hidden className="fixed inset-0 z-30 bg-neutral-900/50 xl:hidden" onClick={closeDrawer} />}
       <aside
         id="assistant-panel"
-        aria-label="Assistant"
+        aria-label={editing ? "Game editor" : "Assistant"}
         role={isDrawer && drawerOpen ? "dialog" : undefined}
         aria-modal={isDrawer && drawerOpen ? true : undefined}
         inert={isDrawer && !drawerOpen}
         className={[
+          "flex flex-col overflow-hidden bg-[linear-gradient(180deg,var(--color-surface),color-mix(in_srgb,var(--color-surface)_40%,var(--color-bg)))]",
           // Below 1280 px: off-canvas drawer.
-          "fixed inset-y-0 right-0 z-40 flex w-full max-w-md flex-col overflow-hidden bg-white shadow-xl transition-transform duration-200 dark:bg-zinc-900",
+          "fixed inset-y-0 right-0 z-40 w-full max-w-md shadow-lg transition-transform duration-200",
           drawerOpen ? "translate-x-0" : "translate-x-full",
-          // From 1280 px: sticky column beside the table.
-          "xl:sticky xl:top-6 xl:bottom-auto xl:z-auto xl:h-[calc(100dvh-7.5rem)] xl:max-w-none xl:translate-x-0 xl:rounded-lg xl:border xl:border-zinc-200 xl:shadow-none xl:transition-none dark:xl:border-zinc-800",
+          // From 1280 px: docked rail beside the catalog.
+          "xl:sticky xl:top-0 xl:z-auto xl:h-[min(calc(100dvh-54px),900px)] xl:min-h-[520px] xl:max-w-none xl:flex-[0_0_clamp(290px,28vw,400px)] xl:translate-x-0 xl:shadow-sm xl:transition-none",
         ].join(" ")}
       >
-        <div className="flex items-start justify-between gap-3 border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
-          <div>
-            <h2 className="text-sm font-semibold">Assistant</h2>
-            <p className="text-xs text-zinc-500">Answers come from live lookups against the catalog.</p>
-          </div>
-          <button
-            type="button"
-            onClick={() => setDrawerOpen(false)}
-            aria-label="Close assistant"
-            className={`text-base xl:hidden ${quietButton}`}
-          >
-            ×
-          </button>
-        </div>
-        <div className="min-h-0 flex-1">
-          <ChatView inputRef={inputRef} />
-        </div>
+        <button
+          type="button"
+          onClick={closeDrawer}
+          aria-label="Close panel"
+          className="btn btn-ghost absolute top-2.5 right-2.5 z-10 size-[30px] p-0 xl:hidden"
+        >
+          <X size={15} aria-hidden />
+        </button>
+        <ChatView
+          className={editing ? "hidden" : ""}
+          inputRef={chatInputRef}
+          onReferences={setHighlightIds}
+        />
+        {editing && <GameEditor key={rail.mode === "edit" ? rail.game.id : "new"} game={rail.mode === "edit" ? rail.game : undefined} />}
       </aside>
     </>
-  );
-}
-
-/** "Ask AI" opens the drawer on narrow screens; on wide screens the panel is always shown. */
-export function ChatToggle({ state }: { state: ChatPanelState }) {
-  const { drawerOpen, setDrawerOpen, askButtonRef } = state;
-  return (
-    <button
-      ref={askButtonRef}
-      type="button"
-      onClick={() => setDrawerOpen(true)}
-      aria-controls="assistant-panel"
-      aria-expanded={drawerOpen}
-      className="rounded-md border border-zinc-300 px-4 py-2 text-sm font-medium hover:bg-zinc-100 xl:hidden dark:border-zinc-700 dark:hover:bg-zinc-800"
-    >
-      Ask AI
-    </button>
   );
 }
