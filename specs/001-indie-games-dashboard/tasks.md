@@ -39,7 +39,7 @@ request/response helpers for the two route files).
 **Purpose**: Scaffold the Next.js 16 project around the existing repo files and pin the
 verified dependency versions.
 
-- [ ] T001 Scaffold Next.js into a temp dir and merge into the repo root: run
+- [X] T001 Scaffold Next.js into a temp dir and merge into the repo root: run
       `npx create-next-app@16.4.2 app --ts --tailwind --eslint --app --src-dir --import-alias "@/*" --use-npm --yes`
       inside the scratchpad, then move `app/*` (including dotfiles, excluding `app/.git`)
       into the repo root **without overwriting** the existing `README.md`, `.gitignore`,
@@ -47,28 +47,37 @@ verified dependency versions.
       `.gitignore` that the existing one lacks. Confirm `package.json`, `next.config.ts`,
       `tsconfig.json`, `src/app/layout.tsx`, `src/app/page.tsx`, `src/app/globals.css` exist
       and `npm run dev` boots.
-- [ ] T002 Install dependencies in `package.json`:
+- [X] T002 Install dependencies in `package.json`:
       `npm i ai@7.0.143 @ai-sdk/anthropic@4.0.82 @ai-sdk/react@4.0.147 drizzle-orm@0.45.4 drizzle-zod@0.8.3 better-sqlite3@13.0.3 zod@4.6.7`
       and `npm i -D vitest@5.0.5 @types/better-sqlite3@9.6.0`. Add
       `"engines": { "node": ">=22" }` and scripts `"typecheck": "tsc --noEmit"`,
       `"test": "vitest run"`.
-- [ ] T003 [P] Configure `next.config.ts` with `serverExternalPackages: ['better-sqlite3']`
+- [X] T003 [P] Configure `next.config.ts` with `serverExternalPackages: ['better-sqlite3']`
       and create `.nvmrc` containing `24`.
-- [ ] T004 [P] Create `.env.example` with `ANTHROPIC_API_KEY=` and a commented
+- [X] T004 [P] Create `.env.example` with `ANTHROPIC_API_KEY=` and a commented
       `ANTHROPIC_MODEL=` line ("Optional. Defaults to claude-opus-5-5"). Verify `.gitignore`
       already ignores `.env.local` and `*.db` (it does), so `data/games.db` stays out of git
       while the `data/` directory itself can be created at runtime.
-- [ ] T005 [P] Create `vitest.config.ts` (`test.environment: 'node'`,
+- [X] T005 [P] Create `vitest.config.ts` (`test.environment: 'node'`,
       `test.include: ['tests/**/*.test.ts']`, alias `@` → `./src`).
-- [ ] T006 [P] Create `AI_WORKFLOW.md` skeleton with the four mandatory headings from the
+- [X] T006 [P] Create `AI_WORKFLOW.md` skeleton with the four mandatory headings from the
       brief — "Tools used and why", "Prompts and outcomes", "Where the AI got it wrong",
       "Parallel agents / subagents / worktrees" — plus a "Running log" section. Record the
       Spec Kit flow used so far (constitution → specify → clarify → plan → tasks) with links
       to `specs/001-indie-games-dashboard/`.
-- [ ] T007 Run `npm run lint && npm run typecheck`; commit `chore: scaffold Next.js 16 app with
+- [X] T007 Run `npm run lint && npm run typecheck`; commit `chore: scaffold Next.js 16 app with
       AI SDK, Drizzle and SQLite dependencies`.
 
 **Checkpoint**: `npm run dev` serves the default Next page; lint and typecheck pass.
+
+**Deviations recorded during implementation** (apply to all later tasks):
+- Next 16.4 scaffolds with `cacheComponents: true`. Route segment `export const dynamic` is
+  **removed** in that mode, so every `dynamic = 'force-dynamic'` below is replaced by
+  `await connection()` (from `next/server`) before the first repository read in a page or
+  `GET` handler; the dashboard's data component sits inside `<Suspense>`.
+- `serverExternalPackages: ['better-sqlite3']` dropped from T003 — Next already externalises it.
+- `@types/node` bumped to `^22` (vitest 5 peer requirement); `typecheck` script is
+  `next typegen && tsc --noEmit` so it works before the first `next dev`.
 
 ---
 

@@ -16,3 +16,12 @@ pnpm-debug.log*
 *.sqlite3
 *.db
 coverage/
+
+# Next.js scaffold additions
+/.pnp
+.pnp.*
+yarn-error.log*
+*.pem
+.vercel
+*.tsbuildinfo
+next-env.d.ts
