@@ -311,7 +311,7 @@ an `id`, `400` with four `fields` entries, `200` on update, `204` on delete, `40
 **Purpose**: The graded deliverables around the code — README (10%), AI_WORKFLOW.md (30%),
 PR — and the final quality gates.
 
-- [ ] T039 [P] Rewrite `README.md` (replacing the assessment brief, which stays in git
+- [X] T039 [P] Rewrite `README.md` (replacing the assessment brief, which stays in git
       history): one-paragraph overview; prerequisites (Node ≥ 22, Anthropic key, no Docker);
       run steps in ≤ 5 commands (`cp .env.example .env.local`, `npm install`, `npm run
       dev`); env vars incl. `ANTHROPIC_MODEL` override; feature tour (dashboard, chat with
@@ -319,23 +319,23 @@ PR — and the final quality gates.
       repository module, tools call it in-process, no DB in prompt); `npm test` / `lint` /
       `typecheck`; trade-offs (no migrations, session-only chat, no auth, Node ≥ 22,
       Opus by default and how to switch).
-- [ ] T040 [P] Finalise `AI_WORKFLOW.md`: (1) tools used and why — Claude Code with Spec Kit
+- [X] T040 [P] Finalise `AI_WORKFLOW.md`: (1) tools used and why — Claude Code with Spec Kit
       skills, which models; (2) 3–5 concrete prompts with outcomes, drawn from the Running
       log (e.g. the Docker clarification, the storage recommendation, the AI SDK API-drift
       discovery via bundled docs, the prompt tuning in T033); (3) one moment the AI got it
       wrong and the fix; (4) parallel agents / subagents / worktrees — describe actual usage
       or state none were used and why. Keep the Running log as an appendix.
-- [ ] T041 [P] Add `.github/PULL_REQUEST_TEMPLATE.md` content as a prepared PR body in
+- [X] T041 [P] Add `.github/PULL_REQUEST_TEMPLATE.md` content as a prepared PR body in
       `specs/001-indie-games-dashboard/pr-body.md`: Name, Email (from `git config
       user.email`), Time spent (sum from the Running log), What I built, How to run, Trade-offs,
       and the checklist with all five boxes ticked.
-- [ ] T042 Run the complete quickstart.md validation (S1, S2, S3, Automated, and the SC-007
+- [ ] T042 (Done: S3, Automated, SC-007 at 45–75 ms for 100 games. Pending: S1 browser click-through, S2 with a real key.) Run the complete quickstart.md validation (S1, S2, S3, Automated, and the SC-007
       check: `POST` 88 extra games in a shell loop, reload `/`, confirm < 2 s) and fix
       anything that fails.
-- [ ] T043 Final gates: `npm run lint && npm run typecheck && npm test && npm run build`;
+- [X] T043 Final gates: `npm run lint && npm run typecheck && npm test && npm run build`;
       `git status` shows no `.env.local` or `data/*.db`; remove the Sync Impact Report
       comment from `.specify/memory/constitution.md`.
-- [ ] T044 Commit `docs: README, AI_WORKFLOW and submission notes`; push
+- [ ] T044 (Commit done; push + PR awaiting confirmation.) Commit `docs: README, AI_WORKFLOW and submission notes`; push
       `submission/jorge-sandoval`; open the PR to upstream `main` using
       `specs/001-indie-games-dashboard/pr-body.md`.
 

@@ -5,19 +5,81 @@ written while working; the four sections above it summarise it.
 
 ## 1. Tools used and why
 
-_To be finalised at the end (T040)._
+- **Claude Code (CLI)** did all planning, coding, verification and commits. It can run
+  commands, so it could check its own work: `npm view` for versions, the docs bundled in
+  `node_modules`, tests, `next build`, and curl against the running server.
+- **Spec Kit** (`/speckit-*` skills inside Claude Code) for spec-driven development:
+  constitution → specify → clarify → plan → tasks → implement. The 2–3 hour time box
+  rewards deciding scope up front. Spec Kit gave the assistant written acceptance criteria to
+  build and test against, and the artefacts double as evidence of the process
+  ([`specs/001-indie-games-dashboard/`](specs/001-indie-games-dashboard/)).
+- **Models:** Claude Opus 5.5 for most of the session. I switched to Claude Fable 5.1 with
+  `/model` for the constitution, spec, clarify, plan and tasks steps, then back to Opus for
+  implementation.
+- **No Cursor or Copilot.** One agentic tool with shell access was enough, and kept the whole
+  history in one transcript.
 
 ## 2. Prompts and outcomes
 
-_To be finalised at the end (T040). Candidates are tagged **[prompt]** in the Running log._
+1. **`/speckit-specify indie games dashboard with CRUD, REST API and streaming AI chat`**:
+   a deliberately short prompt. The constitution, which was derived from the brief's grading
+   table, supplied the constraints. Outcome: a spec with 3 prioritised user stories, 24
+   testable requirements and 8 measurable success criteria, with no clarification markers
+   left.
+2. **`/speckit-clarify does it make sense to create a docker-compose and have a docker for
+   the app and another for db? is any other container needed? suggestions?`**. Outcome: the
+   assistant argued against it. Deployment is out of scope, SQLite is embedded, and every
+   reviewer has Node but not every reviewer runs Docker. I chose option A, a single local
+   process, which became clarification Q1 and tightened SC-006 to "Node + API key only".
+3. **"the recommendation for storage is SQLite? via better-sqlite3 or Drizzle?"** Outcome:
+   Drizzle on better-sqlite3, chosen because `drizzle-zod` gives one schema shared by the API,
+   the form and the AI tools. It's now the core of the code (`src/lib/db/schema.ts`). During
+   planning the assistant also checked whether Node's built-in `node:sqlite` could avoid a
+   native module. It couldn't: Drizzle has no driver for it.
+4. **"before implementing, does it make sense to commit?"** Outcome: yes. The planning
+   artefacts went in as two commits before any code, so the history shows
+   spec → plan → tasks → code in order and gave a rollback point before the scaffold merge.
+5. **`/speckit-implement`**: executed the 44 tasks phase by phase, with a commit at each
+   checkpoint. Before writing any SDK call, the assistant read the installed package's docs
+   or `.d.ts` instead of relying on memory. That caught several API changes; see section 3
+   and the Running log.
 
 ## 3. Where the AI got it wrong
 
-_To be finalised at the end (T040). Candidates are tagged **[wrong]** in the Running log._
+**The plan's Next.js caching instructions were wrong for the installed version.** During
+`/speckit-plan` the assistant planned `export const dynamic = 'force-dynamic'` on every route
+that reads the database. That's the standard pattern from earlier Next.js versions. But
+`create-next-app@16.4` turns on `cacheComponents: true` by default, and in that mode route
+segment `dynamic` is **removed**. Worse, better-sqlite3 is synchronous, so its queries finish
+during prerendering. Without a fix, `GET /api/games` and the dashboard would have been
+**frozen at build time and served stale in production**, while looking fine in `next dev`.
+
+*How it was caught:* the scaffold generated an `AGENTS.md` that says "This is NOT the Next.js
+you know… read `node_modules/next/dist/docs/`". Grepping those docs for `better-sqlite3`
+turned up the exact case.
+*Fix:* `await connection()` before every read in a page or `GET` handler, and `<Suspense>`
+around the dashboard's data. *Verified:* `next build` lists `/` as Partial Prerender and the
+API routes as dynamic, and against `next start` the list went from 12 to 13 rows after a
+`POST`. The deviation is recorded at the top of
+[`tasks.md`](specs/001-indie-games-dashboard/tasks.md).
+
+A smaller one: the assistant stopped the dev server with `pkill -f 'next dev'`. That also
+matched the shell running its own test script, so the script killed itself halfway through
+a check. It was spotted from the truncated output and fixed with `fuser -k 3000/tcp`.
 
 ## 4. Parallel agents / subagents / worktrees
 
-_To be finalised at the end (T040)._
+**None were used for implementation, on purpose.** The codebase is about 1,300 lines, and
+the stories share a foundation (schema → repository → routes) that had to land first. After
+that, each phase took 3–10 minutes of agent time. Splitting across agents or worktrees would
+have added merge and coordination cost for little gain. `tasks.md` still marks the
+parallelisable tasks (`[P]`, 14 of 44), and the three user stories are independent once the
+foundation exists. On a larger feature, I'd give US1 and US2 to separate agents in separate
+git worktrees.
+
+Within the single session, the assistant still parallelised: independent tool calls (file
+writes, docs lookups, `npm view` checks) went out together, and the AI SDK was installed in a
+scratch directory to read its docs during planning without touching the project.
 
 ---
 
