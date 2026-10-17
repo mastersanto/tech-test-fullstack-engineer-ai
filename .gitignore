@@ -15,6 +15,9 @@ pnpm-debug.log*
 *.sqlite
 *.sqlite3
 *.db
+*.db-wal
+*.db-shm
+*.db-journal
 coverage/
 
 # Next.js scaffold additions

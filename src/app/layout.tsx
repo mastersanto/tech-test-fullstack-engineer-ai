@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { NavLinks } from "@/components/NavLinks";
+import Link from "next/link";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -23,12 +23,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col bg-zinc-50 font-sans text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
         <header className="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-          <div className="mx-auto flex max-w-6xl items-center gap-8 px-6 py-3">
-            <span className="font-semibold tracking-tight">Indie Games</span>
-            <NavLinks />
+          <div className="mx-auto flex max-w-[1440px] items-center px-6 py-3">
+            <Link href="/" className="font-semibold tracking-tight">
+              Indie Games
+            </Link>
           </div>
         </header>
-        <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-6 py-8">{children}</main>
+        <main className="mx-auto flex w-full max-w-[1440px] flex-1 flex-col px-6 py-8">{children}</main>
       </body>
     </html>
   );

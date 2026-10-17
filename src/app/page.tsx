@@ -1,23 +1,16 @@
 import { connection } from "next/server";
 import { Suspense } from "react";
-import { GameForm } from "@/components/games/GameForm";
+import { DashboardShell } from "@/components/DashboardShell";
 import { GamesTable } from "@/components/games/GamesTable";
 import { getRepository } from "@/lib/games/repository";
 
 export default function DashboardPage() {
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-end justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Games catalog</h1>
-          <p className="mt-1 text-sm text-zinc-500">Monthly revenue, downloads and ratings for every tracked title.</p>
-        </div>
-        <GameForm mode="create" />
-      </div>
+    <DashboardShell>
       <Suspense fallback={<p className="text-sm text-zinc-500">Loading games…</p>}>
         <Catalog />
       </Suspense>
-    </div>
+    </DashboardShell>
   );
 }
 
@@ -26,11 +19,11 @@ async function Catalog() {
   await connection();
   const games = getRepository().listGames();
   return (
-    <>
+    <div className="flex flex-col gap-2">
       <GamesTable games={games} />
       <p className="text-xs text-zinc-500">
         {games.length} {games.length === 1 ? "game" : "games"}
       </p>
-    </>
+    </div>
   );
 }

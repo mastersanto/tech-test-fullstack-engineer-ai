@@ -2,7 +2,7 @@
 
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent, type Ref } from "react";
 import type { ChatMessage } from "@/lib/ai/agent";
 import { MessageParts } from "./MessageParts";
 
@@ -24,18 +24,20 @@ function errorMessage(error: Error): string {
   }
 }
 
-export function ChatView() {
+export function ChatView({ inputRef }: { inputRef?: Ref<HTMLInputElement> }) {
   const { messages, sendMessage, status, error, stop, regenerate } = useChat<ChatMessage>({
     transport: new DefaultChatTransport({ api: "/api/chat" }),
   });
   const [input, setInput] = useState("");
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
 
   const busy = status === "submitted" || status === "streaming";
   const canSend = input.trim().length > 0 && !busy;
 
+  // Scroll the message list itself; scrollIntoView would also scroll the page around the panel.
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+    const list = listRef.current;
+    if (list) list.scrollTop = list.scrollHeight;
   }, [messages, status]);
 
   function send(text: string) {
@@ -52,8 +54,8 @@ export function ChatView() {
   const lastMessage = messages.at(-1);
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-      <div className="flex min-h-[24rem] flex-1 flex-col gap-4 overflow-y-auto p-6" aria-live="polite">
+    <div className="flex h-full min-h-0 flex-col">
+      <div ref={listRef} className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-4" aria-live="polite">
         {messages.length === 0 && (
           <div className="m-auto flex max-w-md flex-col items-center gap-4 text-center">
             <p className="text-sm text-zinc-500">
@@ -109,12 +111,12 @@ export function ChatView() {
             </button>
           </div>
         )}
-        <div ref={bottomRef} />
       </div>
 
       <form onSubmit={submit} className="flex flex-col gap-1 border-t border-zinc-200 p-4 dark:border-zinc-800">
         <div className="flex gap-2">
           <input
+            ref={inputRef}
             value={input}
             onChange={(event) => setInput(event.target.value)}
             maxLength={MAX_LENGTH}
