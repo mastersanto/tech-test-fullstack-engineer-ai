@@ -165,17 +165,17 @@ reload; cancelled delete changes nothing; emptied catalog stays empty after rest
 
 ### Implementation for User Story 1
 
-- [ ] T018 [P] [US1] Rewrite `src/app/layout.tsx`: HTML shell, Tailwind body classes, a top nav
+- [X] T018 [P] [US1] Rewrite `src/app/layout.tsx`: HTML shell, Tailwind body classes, a top nav
       with links "Dashboard" (`/`) and "Chat" (`/chat`) that highlights the active route
       (FR-022), `max-w-6xl mx-auto px-6` content container. Replace boilerplate in
       `src/app/globals.css` with `@import "tailwindcss";` plus minimal base styles.
-- [ ] T019 [P] [US1] Create `src/components/games/GamesTable.tsx` (server-compatible):
+- [X] T019 [P] [US1] Create `src/components/games/GamesTable.tsx` (server-compatible):
       props `games: Game[]`; renders a table with columns Title, Developer, Genre, Monthly
       revenue, Downloads, Rating, Actions; cells use `formatUsd` / `formatCount` /
       `formatRating` (FR-023); numeric columns right-aligned; when `games.length === 0`
       render an empty state "No games yet — add your first game" (FR-008). Each row mounts
       `<GameForm mode="edit" game={…} />` trigger and `<DeleteGameButton id title />`.
-- [ ] T020 [P] [US1] Create `src/components/games/GameForm.tsx` (`'use client'`): props
+- [X] T020 [P] [US1] Create `src/components/games/GameForm.tsx` (`'use client'`): props
       `mode: 'create' | 'edit'`, `game?: Game`. A trigger button ("Add game" / "Edit") opens a
       native `<dialog>` (`showModal()`) containing six labelled inputs (`type="number"` with
       `step` 0.01 / 1 / 0.1 for revenue / downloads / rating). On submit: build `GameInput`,
@@ -184,18 +184,18 @@ reload; cancelled delete changes nothing; emptied catalog stays empty after rest
       show the server `fields` messages; on `404` show "This game no longer exists" and
       `router.refresh()`; on success close the dialog, reset, and `router.refresh()`
       (FR-002, FR-003, FR-005). Disable the submit button while the request is in flight.
-- [ ] T021 [P] [US1] Create `src/components/games/DeleteGameButton.tsx` (`'use client'`):
+- [X] T021 [P] [US1] Create `src/components/games/DeleteGameButton.tsx` (`'use client'`):
       props `id`, `title`. Click → `window.confirm("Delete \"{title}\"? This cannot be
       undone.")`; on cancel do nothing (FR-004); on confirm `fetch DELETE /api/games/{id}`;
       `204` → `router.refresh()`; `404` → alert "This game no longer exists" then
       `router.refresh()`.
-- [ ] T022 [US1] Rewrite `src/app/page.tsx` as a server component: `export const dynamic =
+- [X] T022 [US1] Rewrite `src/app/page.tsx` as a server component: `export const dynamic =
       'force-dynamic'`; call `listGames()` from `@/lib/games/repository`; render a page header
       with the game count and the `<GameForm mode="create" />` trigger, then
       `<GamesTable games={games} />` (FR-001).
-- [ ] T023 [US1] Run quickstart.md → S1 steps 1–6 manually in the browser; fix any
+- [ ] T023 [US1] (HTTP-level checks done: render, persistence, no reseed. Browser click-through pending.) Run quickstart.md → S1 steps 1–6 manually in the browser; fix any
       discrepancy; confirm layout has no horizontal scroll at 1024 px (FR-024).
-- [ ] T024 [US1] `npm run lint && npm run typecheck`; append a "Dashboard" entry to
+- [X] T024 [US1] `npm run lint && npm run typecheck`; append a "Dashboard" entry to
       `AI_WORKFLOW.md` → Running log; commit `feat: games dashboard with add, edit and delete`.
 
 **Checkpoint**: User Story 1 is a complete internal tool on its own — the MVP.

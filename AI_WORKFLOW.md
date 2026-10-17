@@ -87,3 +87,18 @@ before any code was written.
 - Smoke test against `next dev`: every status code and error body matched
   `contracts/games-api.md` on the first run, including `404` before body validation for
   stale edits.
+
+### Dashboard (T018–T024)
+
+- Server-rendered table, native `<dialog>` form that validates on the client with the same
+  `gameInputSchema` the API uses, confirm-before-delete, and an empty state.
+- Cache Components in practice: the page is a static shell, and the catalog streams inside
+  `<Suspense>` after `await connection()`. The `next build` route table shows `/` as
+  "Partial Prerender", which confirms the catalog is not frozen at build time.
+- **[wrong] The assistant's own test script killed itself.** It stopped the dev server with
+  `pkill -f 'next dev'`, which also matched the shell running the script, because its command
+  line contained that string. The script aborted before the empty-catalog restart check ran.
+  It was rerun with `fuser -k 3000/tcp`.
+- Verified over HTTP: 12 seeded rows with formatted values, POST shows up after reload, and
+  deleting all games then restarting shows the empty state with no reseed. No browser tool was
+  available in the session, so the dialog interactions still need a manual click-through.
