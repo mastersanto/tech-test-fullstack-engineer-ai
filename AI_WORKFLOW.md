@@ -217,3 +217,21 @@ to the first text token, and the answer.
   leave it as is. I chose to reword it. The chip gives feedback well within 3 s, Opus stays
   the default for answer quality, and the change is recorded as a post-implementation
   clarification in the spec. `ANTHROPIC_MODEL` remains the lever if text latency matters.
+
+### Feature 002: Dashboard chat panel
+
+- **[prompt] "I'd like to improve the UX, does it make sense to, instead of having a new
+  section for the chat, add it directly at home? if so, create a new spec for it?"** The
+  assistant agreed: answers can be checked against the visible table, and the edit → ask
+  loop needs no navigation. It created a separate spec (`002`) rather than editing 001,
+  because 001 was already implemented and committed. See
+  [`specs/002-dashboard-chat-panel/`](specs/002-dashboard-chat-panel/).
+- Spec Kit steps: `/speckit-specify` (3 stories, 12 requirements, 6 success criteria),
+  `/speckit-plan`, then `/speckit-tasks` (21 tasks).
+- Key design decision from the plan: **one chat instance, never unmounted**. Panel, drawer
+  and hidden are CSS states of the same element. The bundled Next docs confirm that
+  `router.refresh()` keeps client state, so table edits can't wipe the conversation.
+  Swapping components at a breakpoint would have.
+- While generating tasks, the first draft of T007 told the server-component `page.tsx` to
+  call a client hook, then corrected itself in the same sentence. Caught on review and
+  rewritten around a client `DashboardShell` wrapper before implementation.
