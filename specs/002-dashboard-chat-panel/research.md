@@ -77,9 +77,9 @@ bundled in `node_modules/next/dist/docs/`.
   then gets about 1280 − 48 (padding) − 24 (gap) − 400 = **808 px**. The seven columns
   (six data columns plus actions) fit at `text-sm` with `px-3` cells. The page header row
   (title + "Add game") stays above the grid.
-- **At 1024 px**: about 552 px for the table. It may scroll horizontally *inside its own
-  container* (it already has `overflow-x-auto`). That is not page scroll, so SC-006 still
-  holds. SC-002 is only measured at 1280.
+- **At 1024 px** (original plan): about 552 px for the table, so Rating and Actions needed a
+  sideways scroll inside the table. **Changed after review**: the side panel starts at `xl`
+  (1280 px); below that the drawer is used and the table gets the full width.
 - **Vertical budget at 800 px**: header ~53 px, page title row ~70 px, table header ~40 px,
   rows ~45 px each, so 8 rows ≈ 520 px plus about 680 px total. That fits. The panel height
   is `100dvh − header − padding`, so the chat input stays visible.

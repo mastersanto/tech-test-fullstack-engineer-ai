@@ -15,12 +15,12 @@
 
 | Width | Table | Assistant | Controls |
 |---|---|---|---|
-| **≥ 1024 px** | left column, `minmax(0, 1fr)` | right column, 400 px, sticky under the header, full remaining viewport height; message list scrolls inside; always shown | none |
-| **< 1024 px** | full width | off-screen drawer from the right (`max-w-md`, full height) over a dimmed backdrop | "Ask AI" button next to "Add game"; close (×) button in the drawer header |
+| **≥ 1280 px** | left column, `minmax(0, 1fr)` | right column, 400 px, sticky under the header, full remaining viewport height; message list scrolls inside; always shown | none |
+| **< 1280 px** | full width | off-screen drawer from the right (`max-w-md`, full height) over a dimmed backdrop | "Ask AI" button next to "Add game"; close (×) button in the drawer header |
 
 Container: `max-w-[1440px]`, 24 px side padding, 24 px gap between columns. The page itself
-never scrolls horizontally. The table may scroll horizontally inside its own bordered
-container at 1024 px.
+never scrolls horizontally. Between 1024 and 1279 px the drawer layout gives the table the full width,
+so all columns fit.
 
 ## Panel / drawer header
 
@@ -34,7 +34,7 @@ from 001, apart from filling the available height.
 |---|---|
 | Add / edit / delete a game | Table refreshes; conversation and any streaming reply are untouched |
 | Ask AI → close → Ask AI (narrow) | Conversation intact; input focused on each open |
-| Resize across 1024 px | Conversation intact; panel or drawer follows its own state |
+| Resize across 1280 px | Conversation intact; panel or drawer follows its own state |
 | `Escape` with drawer open and no form dialog open | Drawer closes, focus returns to "Ask AI" |
 | `Escape` with the add/edit form open | Only the form closes |
 | Click on backdrop | Drawer closes |

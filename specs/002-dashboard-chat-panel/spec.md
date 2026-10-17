@@ -15,6 +15,9 @@
 - Q: Hiding the panel on wide screens made the table jump from about 800 px to 1,230 px wide
   and shifted the header buttons. Should the panel stay hideable? → A: No. On wide screens
   the panel is always shown; there is no Hide/Show. The narrow-screen drawer is unchanged.
+- Q: Between 1024 and 1279 px the table gets about 550 px, so Rating and Edit/Delete need a
+  sideways scroll inside the table. Should the side panel start at a wider breakpoint? → A:
+  Yes. Side panel from 1280 px; the drawer is used below 1280 px.
 
 **Builds on**: [001-indie-games-dashboard](../001-indie-games-dashboard/spec.md). The
 assistant's behaviour (lookups, answers, streaming, error handling: 001 FR-012 to FR-021) is
@@ -39,7 +42,7 @@ check each answer against the visible table.
 
 **Acceptance Scenarios**:
 
-1. **Given** a window at least 1024 px wide, **When** the operator opens the home page,
+1. **Given** a window at least 1280 px wide, **When** the operator opens the home page,
    **Then** the games table and the chat panel are both visible side by side, the table is
    readable without horizontal scrolling, and the chat input is visible without scrolling
    the page.
@@ -94,7 +97,7 @@ confirm the conversation is unchanged.
 
 **Acceptance Scenarios**:
 
-1. **Given** a window narrower than 1024 px, **When** the operator opens the home page,
+1. **Given** a window narrower than 1280 px, **When** the operator opens the home page,
    **Then** the table uses the full width and an "Ask AI" control is visible without
    scrolling.
 2. **Given** the drawer is closed, **When** the operator activates "Ask AI", **Then** the
@@ -102,7 +105,7 @@ confirm the conversation is unchanged.
 3. **Given** the drawer is open, **When** the operator closes it (close button, the Escape
    key, or clicking outside it), **Then** it closes and the conversation is kept for the
    next time it opens.
-4. **Given** the operator resizes the window across 1024 px, **When** the layout switches
+4. **Given** the operator resizes the window across 1280 px, **When** the layout switches
    between panel and drawer, **Then** the conversation is preserved.
 
 ---
@@ -130,15 +133,15 @@ confirm the conversation is unchanged.
 **Layout**
 
 - **FR-001**: The home page MUST show the games table and the assistant together. At window
-  widths of 1024 px and above, the assistant MUST appear as a panel beside the table.
-- **FR-002**: At widths of 1024 px and above, both the table and the panel MUST be usable
+  widths of 1280 px and above, the assistant MUST appear as a panel beside the table.
+- **FR-002**: At widths of 1280 px and above, both the table and the panel MUST be usable
   without horizontal page scrolling. The panel MUST be between 360 px and 440 px wide, and
   the table MUST take the remaining width.
 - **FR-003**: The panel MUST stay in view while the table scrolls vertically, and its
   message list MUST scroll independently, keeping the chat input visible at all times.
 - **FR-004**: On wide screens the panel MUST always be shown, with no hide control, so the
   layout never shifts while the operator works (post-implementation clarification).
-- **FR-005**: At widths below 1024 px, the table MUST use the full width and the assistant
+- **FR-005**: At widths below 1280 px, the table MUST use the full width and the assistant
   MUST be reachable from an always-visible "Ask AI" control that opens it as a drawer over
   the content.
 - **FR-006**: The drawer MUST close with a close button, the Escape key, or a click outside
@@ -149,7 +152,7 @@ confirm the conversation is unchanged.
 
 - **FR-007**: Adding, editing or deleting a game MUST NOT clear, reset or reorder the
   conversation, and MUST NOT interrupt a reply that is streaming.
-- **FR-008**: Opening or closing the drawer and resizing the window across the 1024 px
+- **FR-008**: Opening or closing the drawer and resizing the window across the 1280 px
   breakpoint MUST NOT clear the conversation.
 - **FR-009**: The assistant MUST keep answering from the live catalog, so an edit made in
   the table is reflected in the next answer (continues 001 FR-013).
@@ -190,15 +193,17 @@ confirm the conversation is unchanged.
   again in under 15 seconds, with the conversation intact on reopening.
 - **SC-005**: The 10 scripted questions from 001's quickstart still produce 10/10 correct
   answers when asked from the panel.
-- **SC-006**: No horizontal page scrolling occurs at 768, 1024, 1280 and 1440 px widths.
+- **SC-006**: No horizontal page scrolling occurs at 768, 1024, 1280 and 1440 px widths, and at
+  1024 px every table column is visible without scrolling inside the table.
 
 ## Assumptions
 
-- **Desktop-first internal tool**: the 1024 px breakpoint matches 001 FR-024 ("laptop-sized
-  screen"). Below it the drawer is a convenience, not a fully optimised mobile design.
+- **Desktop-first internal tool**: side by side needs 1280 px so the table keeps all columns
+  visible next to a 400 px panel (post-implementation clarification). Between 1024 px (001
+  FR-024's "laptop-sized screen") and 1280 px the table gets the full width. Below it the drawer is a convenience, not a fully optimised mobile design.
 - **Panel on the right**: the table is the primary content and stays on the left, where the
   operator's attention starts. The chat sits on the right, as in common assistant layouts.
-- **Always shown on wide screens**: the panel can't be hidden from 1024 px up, and the drawer
+- **Always shown on wide screens**: the panel can't be hidden from 1280 px up, and the drawer
   starts closed on narrow screens. Neither state is remembered across visits.
 - **Assistant unchanged**: no new tools, prompts or answer types. Any assistant improvement
   is a separate feature.

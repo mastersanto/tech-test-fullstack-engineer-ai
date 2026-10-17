@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { ChatView } from "./ChatView";
 
-const WIDE_QUERY = "(min-width: 1024px)";
+const WIDE_QUERY = "(min-width: 1280px)";
 
 /** Drawer state shared by the panel and the "Ask AI" button. Not remembered across reloads. */
 export function useChatPanel() {
@@ -34,7 +34,7 @@ const quietButton =
   "rounded-md px-2 py-1 text-xs font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100";
 
 /**
- * The single chat instance on the page. From 1024 px it is a sticky column beside the table,
+ * The single chat instance on the page. From 1280 px it is a sticky column beside the table,
  * always shown; below that it is a drawer over the page. Both are CSS states of the same
  * element, so the conversation survives table edits and resizing across the breakpoint.
  */
@@ -73,7 +73,7 @@ export function ChatPanel({ state }: { state: ChatPanelState }) {
   return (
     <>
       {drawerOpen && (
-        <div aria-hidden className="fixed inset-0 z-30 bg-black/40 lg:hidden" onClick={() => setDrawerOpen(false)} />
+        <div aria-hidden className="fixed inset-0 z-30 bg-black/40 xl:hidden" onClick={() => setDrawerOpen(false)} />
       )}
       <aside
         id="assistant-panel"
@@ -82,11 +82,11 @@ export function ChatPanel({ state }: { state: ChatPanelState }) {
         aria-modal={isDrawer && drawerOpen ? true : undefined}
         inert={isDrawer && !drawerOpen}
         className={[
-          // Below 1024 px: off-canvas drawer.
+          // Below 1280 px: off-canvas drawer.
           "fixed inset-y-0 right-0 z-40 flex w-full max-w-md flex-col overflow-hidden bg-white shadow-xl transition-transform duration-200 dark:bg-zinc-900",
           drawerOpen ? "translate-x-0" : "translate-x-full",
-          // From 1024 px: sticky column beside the table.
-          "lg:sticky lg:top-6 lg:bottom-auto lg:z-auto lg:h-[calc(100dvh-7.5rem)] lg:max-w-none lg:translate-x-0 lg:rounded-lg lg:border lg:border-zinc-200 lg:shadow-none lg:transition-none dark:lg:border-zinc-800",
+          // From 1280 px: sticky column beside the table.
+          "xl:sticky xl:top-6 xl:bottom-auto xl:z-auto xl:h-[calc(100dvh-7.5rem)] xl:max-w-none xl:translate-x-0 xl:rounded-lg xl:border xl:border-zinc-200 xl:shadow-none xl:transition-none dark:xl:border-zinc-800",
         ].join(" ")}
       >
         <div className="flex items-start justify-between gap-3 border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
@@ -98,7 +98,7 @@ export function ChatPanel({ state }: { state: ChatPanelState }) {
             type="button"
             onClick={() => setDrawerOpen(false)}
             aria-label="Close assistant"
-            className={`text-base lg:hidden ${quietButton}`}
+            className={`text-base xl:hidden ${quietButton}`}
           >
             ×
           </button>
@@ -121,7 +121,7 @@ export function ChatToggle({ state }: { state: ChatPanelState }) {
       onClick={() => setDrawerOpen(true)}
       aria-controls="assistant-panel"
       aria-expanded={drawerOpen}
-      className="rounded-md border border-zinc-300 px-4 py-2 text-sm font-medium hover:bg-zinc-100 lg:hidden dark:border-zinc-700 dark:hover:bg-zinc-800"
+      className="rounded-md border border-zinc-300 px-4 py-2 text-sm font-medium hover:bg-zinc-100 xl:hidden dark:border-zinc-700 dark:hover:bg-zinc-800"
     >
       Ask AI
     </button>

@@ -72,7 +72,7 @@ exists but isn't on the page yet.
 
 ## Phase 3: User Story 1 - Ask and Verify on One Screen (Priority: P1) 🎯 MVP
 
-**Goal**: At ≥ 1024 px the table and assistant sit side by side on `/`. The Chat tab and
+**Goal**: At ≥ 1280 px the table and assistant sit side by side on `/`. The Chat tab and
 page are gone, and the panel can be hidden and shown.
 
 **Independent Test**: quickstart.md V1 at 1280 × 800: six columns, ≥ 8 rows and the chat
@@ -151,11 +151,11 @@ a reply streams doesn't interrupt it, and Escape closes only the form.
 
 ## Phase 5: User Story 3 - Use the Chat on a Narrow Screen (Priority: P3)
 
-**Goal**: Below 1024 px the table is full width and an "Ask AI" button opens the assistant
+**Goal**: Below 1280 px the table is full width and an "Ask AI" button opens the assistant
 as a drawer, which closes with ×, Escape or a backdrop click, with focus handled and the
 conversation preserved.
 
-**Independent Test**: quickstart.md V3 at 768 px, and V4.1 (resize across 1024 px with the
+**Independent Test**: quickstart.md V3 at 768 px, and V4.1 (resize across 1280 px with the
 same conversation).
 
 ### Implementation for User Story 3
@@ -164,9 +164,9 @@ same conversation).
       `src/components/chat/ChatPanel.tsx`: `fixed inset-y-0 right-0 z-40 w-full max-w-md
       transition-transform` with `translate-x-0` when `drawerOpen`, otherwise
       `translate-x-full`. Combine with T006's `lg:` overrides so the wide layout ignores
-      `drawerOpen`. While `drawerOpen` and below `lg`, set `role="dialog"` and
-      `aria-modal="true"`. While closed below `lg`, set `inert` so hidden controls can't be
-      tabbed into. Compute "below lg" with `window.matchMedia('(min-width: 1024px)')` in an
+      `drawerOpen`. While `drawerOpen` and below `xl`, set `role="dialog"` and
+      `aria-modal="true"`. While closed below `xl`, set `inert` so hidden controls can't be
+      tabbed into. Compute "below lg" with `window.matchMedia('(min-width: 1280px)')` in an
       effect that only toggles these **attributes**; never use it to mount or unmount
       anything (research §1–2).
 - [X] T014 [US3] Narrow controls. `ChatToggle` renders an "Ask AI" button (`lg:hidden`,
@@ -181,7 +181,7 @@ same conversation).
 - [X] T016 [US3] Add `async redirects()` to `next.config.ts` returning
       `[{ source: "/chat", destination: "/#chat", permanent: false }]`. In `ChatPanel`, on
       mount: if `window.location.hash === "#chat"`, set `drawerOpen=true` (only has a visible
-      effect below `lg`), focus `inputRef`, and call
+      effect below `xl`), focus `inputRef`, and call
       `history.replaceState(null, "", window.location.pathname)` (research §5, FR-011).
 - [X] T017 [US3] Run quickstart V3 (768 px) and V4.1–V4.4 (resize, widths, `/chat` redirect,
       `curl -sI localhost:3000/chat` → `307` `location: /#chat`). Fix any focus leak or

@@ -32,9 +32,9 @@
 ## Notes
 
 - Validated 2026-10-17, iteration 1: all items pass.
-- Pixel widths (1024 px breakpoint, 360–440 px panel) are UX requirements, not implementation
-  choices. They make "side by side" and "narrow screen" testable, and the breakpoint matches
-  001 FR-024.
+- Pixel widths (1280 px breakpoint, 360–440 px panel) are UX requirements, not implementation
+  choices. They make "side by side" and "narrow screen" testable. The breakpoint was raised
+  from 1024 px after implementation so the table keeps all columns beside the panel.
 - The former chat address (`/chat`) is mentioned only as a user-visible URL to redirect, not
   as an implementation detail.
 - Supersedes 001 FR-022. 001's other chat requirements (FR-012 to FR-021) carry over

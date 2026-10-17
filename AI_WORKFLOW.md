@@ -260,9 +260,12 @@ to the first text token, and the answer.
   (`relative`), and all 35 checks passed.
 - Reran the 10 scripted questions against the new build: still 10/10, with lookup chips at
   0.75–2.07 s.
-- Known limit, left as is: at 1024–1279 px the table (~550 px) scrolls inside its own box,
-  so the Rating and Actions columns need a sideways scroll there. Allowed by the spec, but
-  flagged to the user.
+- At 1024–1279 px the table (~550 px) had to scroll inside its own box to reach Rating and
+  Edit/Delete. The spec allowed it, but the assistant flagged it from the screenshot and
+  suggested raising the side-panel breakpoint. The user agreed, so the panel now starts at
+  `xl` (1280 px) and the drawer is used below that. Recorded as a second post-implementation
+  clarification. Three new browser checks at 1024 px: drawer, not panel; all columns visible;
+  conversation carried over. 37/37 pass.
 - **[prompt] "problem found: hide the chat moves the layout, better to not hide it?"** This
   came from clicking through the app by hand. The automated checks had *confirmed* the jump
   (the table went from 806 → 1,230 px) and counted it as a pass, because the spec asked for

@@ -8,7 +8,7 @@
 
 Put the existing `ChatView` on the home page inside a new `ChatPanel` client component.
 `ChatPanel` renders a **single, always-mounted** chat whose placement changes with CSS
-only: a sticky right-hand column from `lg` (1024 px) up, and a fixed overlay drawer below
+only: a sticky right-hand column from `xl` (1280 px) up, and a fixed overlay drawer below
 it. The conversation therefore survives table edits (`router.refresh()` keeps client
 state), hiding and showing, and breakpoint changes, with no state lifting or persistence.
 The Chat nav tab and `/chat` page go away, and `/chat` redirects to `/#chat`. No server,
@@ -28,7 +28,7 @@ of 001's scripted chat questions. No new automated tests: the change is layout a
 behaviour, which the existing Vitest setup (node environment, no DOM) doesn't cover.
 The 19 existing tests must still pass.
 
-**Target Platform**: Desktop browsers first. Drawer layout below 1024 px.
+**Target Platform**: Desktop browsers first. Drawer layout below 1280 px.
 
 **Project Type**: Web application (same single Next.js project as 001).
 
