@@ -292,14 +292,14 @@ an `id`, `400` with four `fields` entries, `200` on update, `204` on delete, `40
 
 ### Implementation for User Story 3
 
-- [ ] T035 [US3] Add `GET` to `src/app/api/games/route.ts`: `listGames()` → `200 Game[]`.
-- [ ] T036 [US3] Add `GET` to `src/app/api/games/[id]/route.ts`: `parseId` → `400
+- [X] T035 [US3] Add `GET` to `src/app/api/games/route.ts`: `listGames()` → `200 Game[]`.
+- [X] T036 [US3] Add `GET` to `src/app/api/games/[id]/route.ts`: `parseId` → `400
       invalid_id`; `getGame` → `200 Game` or `404 not_found`.
-- [ ] T037 [US3] Run the full curl walkthrough from contracts/games-api.md → Examples against
+- [X] T037 [US3] Run the full curl walkthrough from contracts/games-api.md → Examples against
       `npm run dev`, including `GET /api/games/abc` → `400 invalid_id`, a `PUT` to a deleted
       id with an invalid body → `404` (existence before validation), and a body with extra
       keys → stripped. Fix any deviation in `src/lib/api/http.ts` or the route files.
-- [ ] T038 [US3] Append an "API" entry to `AI_WORKFLOW.md` → Running log; commit
+- [X] T038 [US3] Append an "API" entry to `AI_WORKFLOW.md` → Running log; commit
       `feat: games REST read endpoints and contract conformance`.
 
 **Checkpoint**: All three user stories are independently functional.

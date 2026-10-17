@@ -123,3 +123,11 @@ before any code was written.
   proper UI-message SSE stream, Anthropic returns "invalid x-api-key", `onError` logs it,
   and the client receives the friendly message. The 10 scripted questions (T033) are pending
   a real key.
+
+### REST API (T035–T038)
+
+- Added `GET /api/games` and `GET /api/games/[id]`, each calling `await connection()` first.
+- Ran the full contract walkthrough against `next start` (production), not just `next dev`,
+  because a prerendered `GET` would only go stale in production. The list went from 12 to 13
+  after a create, so it is not frozen at build time. All 13 status codes and bodies matched
+  `contracts/games-api.md`.

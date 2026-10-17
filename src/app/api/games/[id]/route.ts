@@ -1,5 +1,14 @@
+import { connection } from "next/server";
 import { invalidId, notFound, parseId, readGameInput } from "@/lib/api/http";
 import { getRepository } from "@/lib/games/repository";
+
+export async function GET(_request: Request, ctx: RouteContext<"/api/games/[id]">) {
+  await connection();
+  const id = parseId((await ctx.params).id);
+  if (id === null) return invalidId();
+  const game = getRepository().getGame(id);
+  return game ? Response.json(game) : notFound();
+}
 
 // Existence is checked before the body is validated, so editing a game that was deleted
 // elsewhere always answers 404.
