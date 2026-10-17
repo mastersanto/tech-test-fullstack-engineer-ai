@@ -274,3 +274,22 @@ to the first text token, and the answer.
   002, amended FR-004, and replaced the browser check with "no Hide control; table width
   never changes". 34/34 checks pass. Lesson: a test can encode a bad requirement; a human
   looking at the screen caught what the script couldn't judge.
+
+### Feature 003: Nocturne redesign
+
+- **[prompt] "I have a new version of the UI in https://claude.ai/design/p/…, could we
+  connect to it? create a new spec for design improvements?"** The session had a
+  `DesignSync` tool that can read Claude Design projects, but its rules restrict it to the
+  user-started `/design-sync` component-sync workflow. The assistant didn't stretch it to
+  this use. It asked for an export instead and refused to write a spec before seeing the
+  design. The user exported a zip to `design/003/`.
+- The zip was treated as untrusted and extracted into an empty scratch folder. The README,
+  theme CSS and 7 screenshots were read. The HTML prototypes and the 69 KB `support.js`
+  runtime weren't needed and weren't reviewed, so only the reviewed files were copied into
+  [`design/003/handoff/`](design/003/handoff/).
+- Spec Kit: `/speckit-specify` (4 stories, 29 FRs, 8 SCs), `/speckit-plan`, then
+  `/speckit-tasks` (40 tasks). The spec flags new scope the design introduced (search, genre
+  filter, sorting), which 001 had ruled out.
+- During planning, the assistant computed WCAG contrast for every token pairing in the
+  design. One fails by a hair: the subline on a *selected* row is 4.49:1 against 4.5. The plan
+  changes that single pairing from 55% to 60% text (≈ 5.0:1).

@@ -13,6 +13,7 @@
   "dependencies": {
     "@ai-sdk/anthropic": "^4.0.82",
     "@ai-sdk/react": "^4.0.147",
+    "@phosphor-icons/react": "2.1.10",
     "ai": "^7.0.143",
     "better-sqlite3": "^13.0.3",
     "drizzle-orm": "^0.45.4",
