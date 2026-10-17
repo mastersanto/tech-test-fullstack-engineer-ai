@@ -73,3 +73,17 @@ before any code was written.
 - `tsc --noEmit` failed on a fresh checkout (`Cannot find name 'LayoutProps'`) because Next 16
   generates those global types at dev/build time. Fixed with the
   `next typegen && tsc --noEmit` script.
+
+### Foundation (T008–T017)
+
+- Schema, seed, DB client, repository, REST write routes and 12 repository tests.
+- Design change while implementing: the plan had repository functions take an optional `db`
+  argument. A `createRepository(db)` factory turned out cleaner. Tests get an in-memory
+  repository, and the app uses `getRepository()`, which opens `data/games.db` lazily so
+  `next build` never creates or seeds the file.
+- The first typecheck failed: a helper typed as `typeof games.title` would not accept the
+  `genre` column, because Drizzle column types carry the column name. Fixed with a union type.
+- Vite warned that `vitest.config.ts` used ESM in a CommonJS package. Renamed to `.mts`.
+- Smoke test against `next dev`: every status code and error body matched
+  `contracts/games-api.md` on the first run, including `404` before body validation for
+  stale edits.

@@ -88,7 +88,7 @@ the dashboard forms need. Nothing story-specific can start before this phase is 
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T008 Create `src/lib/db/schema.ts`: Drizzle `games` table with columns exactly as
+- [X] T008 Create `src/lib/db/schema.ts`: Drizzle `games` table with columns exactly as
       data-model.md — `id` INTEGER PK autoincrement; `title` TEXT NOT NULL; `developer` TEXT
       NOT NULL; `genre` TEXT NOT NULL; `monthly_revenue_usd` REAL NOT NULL;
       `monthly_downloads` INTEGER NOT NULL; `average_rating` REAL NOT NULL; `created_at` TEXT
@@ -102,15 +102,15 @@ the dashboard forms need. Nothing story-specific can start before this phase is 
       `createSelectSchema`, types `Game`, `GameInput`, `Metric =
       'monthly_revenue_usd' | 'monthly_downloads' | 'average_rating'`, and
       `flattenFieldErrors(zodError) → { [field]: string[] }`.
-- [ ] T009 Create `src/lib/db/seed.ts` exporting `SEED_GAMES: GameInput[]` with the 12 rows
+- [X] T009 Create `src/lib/db/seed.ts` exporting `SEED_GAMES: GameInput[]` with the 12 rows
       from data-model.md → Seed dataset, verbatim values (Hollow Depths … Ironvale Tactics).
-- [ ] T010 Create `src/lib/db/client.ts`: `createDb(path: string)` opens `better-sqlite3`,
+- [X] T010 Create `src/lib/db/client.ts`: `createDb(path: string)` opens `better-sqlite3`,
       runs `CREATE TABLE IF NOT EXISTS games (...)` matching T008, and returns
       `drizzle(sqlite, { schema })`. Default export `db` for `data/games.db`: `mkdirSync`
       the `data/` dir, check `existsSync` **before** opening, and insert `SEED_GAMES` only
       when the file did not exist (clarification Q2 — never reseed an emptied catalog).
       Cache the instance on `globalThis` so Next dev HMR does not reopen the file.
-- [ ] T011 Create `src/lib/games/repository.ts` — the **only** importer of
+- [X] T011 Create `src/lib/games/repository.ts` — the **only** importer of
       `src/lib/db/client.ts` — with synchronous functions per data-model.md → Repository
       interface: `listGames()` (order `created_at` asc, `id` asc); `getGame(id)`;
       `createGame(input)` (sets both timestamps to ISO UTC now); `updateGame(id, input)`
@@ -123,29 +123,29 @@ the dashboard forms need. Nothing story-specific can start before this phase is 
       case-insensitive match, then unique partial match, else list candidates under
       `ambiguous[title]`. Accept an optional `db` parameter (default: the singleton) so tests
       can pass an in-memory instance.
-- [ ] T012 [P] Create `src/lib/games/format.ts`: `formatUsd(n)` →
+- [X] T012 [P] Create `src/lib/games/format.ts`: `formatUsd(n)` →
       `Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })`;
       `formatCount(n)` → `Intl.NumberFormat('en-US')`; `formatRating(n)` → `n.toFixed(1)`.
-- [ ] T013 [P] Create `src/lib/api/http.ts`: `jsonError(status, code, message, fields?)`
+- [X] T013 [P] Create `src/lib/api/http.ts`: `jsonError(status, code, message, fields?)`
       producing `{ error: { code, message, fields? } }` with
       `code ∈ validation_error | not_found | invalid_id | invalid_json | ai_not_configured`;
       `parseId(param) → number | null` (positive integer only); `readGameInput(request) →
       { ok: true, data } | { ok: false, response }` that returns `400 invalid_json` on
       unparsable JSON and `400 validation_error` with `flattenFieldErrors` output on schema
       failure (contracts/games-api.md).
-- [ ] T014 Create `src/app/api/games/route.ts` with `POST` only for now: `readGameInput` →
+- [X] T014 Create `src/app/api/games/route.ts` with `POST` only for now: `readGameInput` →
       `createGame` → `201` JSON `Game`. Export `dynamic = 'force-dynamic'`.
-- [ ] T015 Create `src/app/api/games/[id]/route.ts` with `PUT` and `DELETE`: `parseId` →
+- [X] T015 Create `src/app/api/games/[id]/route.ts` with `PUT` and `DELETE`: `parseId` →
       `400 invalid_id`; **check existence first** → `404 not_found`; then (PUT only)
       `readGameInput` → `updateGame` → `200 Game`; DELETE → `deleteGame` → `204` empty body.
       Export `dynamic = 'force-dynamic'`. (Next 16: `params` is a Promise — `await` it.)
-- [ ] T016 Create `tests/repository.test.ts` using `createDb(':memory:')` seeded with
+- [X] T016 Create `tests/repository.test.ts` using `createDb(':memory:')` seeded with
       `SEED_GAMES`: list returns 12; create/get/update/delete round-trip; `updateGame` on a
       missing id → `undefined`; `rankGames('monthly_revenue_usd','desc',1)[0].title ===
       'Hollow Depths'`; `filterGames({ metric:'average_rating', op:'gt', value:4 }).length
       === 7` and `op:'gte'` → 8; `searchGames('lantern')` → 2; `findGamesByTitles(['hollow
       depths','Nope'])` → one found, `notFound: ['Nope']`.
-- [ ] T017 Run `npm test && npm run typecheck && npm run lint`; append a "Foundation" entry
+- [X] T017 Run `npm test && npm run typecheck && npm run lint`; append a "Foundation" entry
       to `AI_WORKFLOW.md` → Running log (what was generated, what was corrected); commit
       `feat: SQLite catalog schema, repository and write endpoints`.
 
