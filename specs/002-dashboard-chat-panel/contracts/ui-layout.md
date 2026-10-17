@@ -15,7 +15,7 @@
 
 | Width | Table | Assistant | Controls |
 |---|---|---|---|
-| **≥ 1024 px** | left column, `minmax(0, 1fr)` | right column, 400 px, sticky under the header, full remaining viewport height; message list scrolls inside | "Hide assistant" in the panel header; when hidden, a "Show assistant" button sits next to "Add game" and the table spans the full width |
+| **≥ 1024 px** | left column, `minmax(0, 1fr)` | right column, 400 px, sticky under the header, full remaining viewport height; message list scrolls inside; always shown | none |
 | **< 1024 px** | full width | off-screen drawer from the right (`max-w-md`, full height) over a dimmed backdrop | "Ask AI" button next to "Add game"; close (×) button in the drawer header |
 
 Container: `max-w-[1440px]`, 24 px side padding, 24 px gap between columns. The page itself
@@ -24,8 +24,8 @@ container at 1024 px.
 
 ## Panel / drawer header
 
-`Assistant` title · short helper text ("Answers come from live lookups…") · the toggle or
-close control. The `ChatView` body (messages, suggestions, error banner, input) is unchanged
+`Assistant` title · short helper text ("Answers come from live lookups…") · the close (×)
+control on narrow screens only. The `ChatView` body (messages, suggestions, error banner, input) is unchanged
 from 001, apart from filling the available height.
 
 ## Interactions
@@ -33,7 +33,6 @@ from 001, apart from filling the available height.
 | Action | Result |
 |---|---|
 | Add / edit / delete a game | Table refreshes; conversation and any streaming reply are untouched |
-| Hide → Show (wide) | Conversation intact |
 | Ask AI → close → Ask AI (narrow) | Conversation intact; input focused on each open |
 | Resize across 1024 px | Conversation intact; panel or drawer follows its own state |
 | `Escape` with drawer open and no form dialog open | Drawer closes, focus returns to "Ask AI" |

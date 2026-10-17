@@ -8,6 +8,14 @@
 
 **Input**: User description: "Move the AI chat onto the dashboard home page as a side panel next to the games table, so operators can ask questions and check answers against the table without switching pages. Replaces the separate Chat page/nav tab; on narrow screens the panel collapses into a toggleable drawer. Builds on the implemented feature 001-indie-games-dashboard."
 
+## Clarifications
+
+### Session 2026-10-17 (post-implementation)
+
+- Q: Hiding the panel on wide screens made the table jump from about 800 px to 1,230 px wide
+  and shifted the header buttons. Should the panel stay hideable? → A: No. On wide screens
+  the panel is always shown; there is no Hide/Show. The narrow-screen drawer is unchanged.
+
 **Builds on**: [001-indie-games-dashboard](../001-indie-games-dashboard/spec.md). The
 assistant's behaviour (lookups, answers, streaming, error handling: 001 FR-012 to FR-021) is
 unchanged. This feature changes only **where** the chat lives and how it coexists with the
@@ -40,9 +48,6 @@ check each answer against the visible table.
    (001 FR-012 to FR-021).
 3. **Given** a long conversation, **When** messages exceed the panel's height, **Then** only
    the message list scrolls; the page, the table and the chat input stay in place.
-4. **Given** the panel is visible, **When** the operator hides it, **Then** the table
-   expands to the full width, and **When** they show it again, **Then** the earlier
-   conversation is still there.
 
 ---
 
@@ -131,8 +136,8 @@ confirm the conversation is unchanged.
   the table MUST take the remaining width.
 - **FR-003**: The panel MUST stay in view while the table scrolls vertically, and its
   message list MUST scroll independently, keeping the chat input visible at all times.
-- **FR-004**: On wide screens the operator MUST be able to hide and show the panel in one
-  action. The panel MUST be shown by default.
+- **FR-004**: On wide screens the panel MUST always be shown, with no hide control, so the
+  layout never shifts while the operator works (post-implementation clarification).
 - **FR-005**: At widths below 1024 px, the table MUST use the full width and the assistant
   MUST be reachable from an always-visible "Ask AI" control that opens it as a drawer over
   the content.
@@ -144,8 +149,8 @@ confirm the conversation is unchanged.
 
 - **FR-007**: Adding, editing or deleting a game MUST NOT clear, reset or reorder the
   conversation, and MUST NOT interrupt a reply that is streaming.
-- **FR-008**: Hiding or showing the panel, opening or closing the drawer, and resizing the
-  window across the 1024 px breakpoint MUST NOT clear the conversation.
+- **FR-008**: Opening or closing the drawer and resizing the window across the 1024 px
+  breakpoint MUST NOT clear the conversation.
 - **FR-009**: The assistant MUST keep answering from the live catalog, so an edit made in
   the table is reflected in the next answer (continues 001 FR-013).
 
@@ -168,8 +173,8 @@ confirm the conversation is unchanged.
 - **Conversation**: unchanged from 001. It now lasts for the whole time the home page is
   open, rather than only while the separate chat page was open. It is still discarded on
   reload.
-- **Panel state**: whether the assistant is shown or hidden (wide screens) or open or closed
-  (narrow screens). It is not remembered across reloads.
+- **Drawer state**: whether the assistant drawer is open or closed (narrow screens only). It is
+  not remembered across reloads.
 
 ## Success Criteria *(mandatory)*
 
@@ -193,8 +198,8 @@ confirm the conversation is unchanged.
   screen"). Below it the drawer is a convenience, not a fully optimised mobile design.
 - **Panel on the right**: the table is the primary content and stays on the left, where the
   operator's attention starts. The chat sits on the right, as in common assistant layouts.
-- **Shown by default, not remembered**: the panel starts visible on wide screens and closed
-  on narrow ones. Remembering the choice across visits is out of scope.
+- **Always shown on wide screens**: the panel can't be hidden from 1024 px up, and the drawer
+  starts closed on narrow screens. Neither state is remembered across visits.
 - **Assistant unchanged**: no new tools, prompts or answer types. Any assistant improvement
   is a separate feature.
 - **No new data or API**: the REST API and data model from 001 are untouched.

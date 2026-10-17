@@ -12,7 +12,7 @@ import { GameForm } from "@/components/games/GameForm";
 export function DashboardShell({ children }: { children: ReactNode }) {
   const chat = useChatPanel();
   return (
-    <div className={`grid grid-cols-1 items-start gap-6 ${chat.wideHidden ? "" : "lg:grid-cols-[minmax(0,1fr)_400px]"}`}>
+    <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1fr)_400px]">
       <div className="flex min-w-0 flex-col gap-6">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>

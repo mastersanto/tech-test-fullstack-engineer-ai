@@ -43,7 +43,7 @@ confirmation.
 makes appears as a chip above the answer ("Ranked games · metric: monthly_revenue_usd"), so
 you can see where every number came from. Follow-up questions keep the context. Unknown games
 are reported as not found instead of invented, and off-topic questions are declined.
-From 1024 px wide it's a sticky side panel you can hide; on narrower screens, "Ask AI" opens it
+From 1024 px wide it's a sticky side panel that is always shown; on narrower screens, "Ask AI" opens it
 as a drawer. Editing games never resets the conversation. `/chat` redirects to `/#chat`,
 which opens the assistant.
 

@@ -118,6 +118,10 @@ panel stays in view while the page scrolls; Hide → Show keeps the conversation
 
 **Checkpoint**: Wide-screen side-by-side layout works on its own; this is the MVP.
 
+> **Post-implementation change**: the Hide/Show toggle from T006/T008 was removed after
+> review because hiding shifted the layout. FR-004 now says the panel is always shown on
+> wide screens.
+
 ---
 
 ## Phase 4: User Story 2 - Edit and Ask Without Losing the Conversation (Priority: P2)

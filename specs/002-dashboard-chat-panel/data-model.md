@@ -9,8 +9,7 @@ No persisted data changes. The `Game` entity, the REST API and the chat API are 
 
 | State | Owner | Type | Default | Changes when | Survives |
 |---|---|---|---|---|---|
-| Conversation | `ChatView` (`useChat`) | `ChatMessage[]` | `[]` | user sends; reply streams | table edits, panel toggle, drawer open/close, resize. **Lost on reload** |
-| `wideHidden` | `ChatPanel` | `boolean` | `false` (panel shown) | "Hide assistant" / "Show assistant" on ≥ 1024 px | everything except reload |
+| Conversation | `ChatView` (`useChat`) | `ChatMessage[]` | `[]` | user sends; reply streams | table edits, drawer open/close, resize. **Lost on reload** |
 | `drawerOpen` | `ChatPanel` | `boolean` | `false` (drawer closed) | "Ask AI", close button, Escape, backdrop click, `#chat` on load | everything except reload |
 
 ### State transitions: drawer (< 1024 px)
@@ -20,12 +19,10 @@ closed ──(Ask AI | load with #chat)──► open ──(close | Esc | backd
   focus: on open → chat input        on close → "Ask AI" button
 ```
 
-### State transitions: panel (≥ 1024 px)
+### Panel (≥ 1024 px)
 
-```
-shown ──(Hide)──► hidden ──(Show)──► shown      (table width grows / shrinks)
-```
+Always shown; no state. (A Hide/Show toggle was built and then removed after review, because
+it shifted the layout; see the spec's post-implementation clarification.)
 
-The two states are independent. Resizing never changes either one, so crossing the 1024 px
-breakpoint shows whatever that width's state already was, and the conversation is never
-remounted.
+Resizing never changes the drawer state, so crossing the 1024 px breakpoint never remounts
+the conversation.

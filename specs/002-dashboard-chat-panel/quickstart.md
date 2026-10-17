@@ -20,8 +20,7 @@ table must no longer list `/chat` as a page.
    the answer matches the table (e.g. Hollow Depths, $142,500).
 3. Ask 6+ questions. **Expect**: only the message list scrolls; the input and table stay put.
 4. Scroll the page down (add rows first if needed). **Expect**: the panel stays in view.
-5. Click "Hide assistant". **Expect**: the table spans the full width. Click "Show
-   assistant". **Expect**: the earlier messages are still there.
+5. **Expect**: no Hide control on wide screens; the layout never shifts.
 
 ### V2: Edit while chatting (US2, SC-003)
 

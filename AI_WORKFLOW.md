@@ -263,3 +263,11 @@ to the first text token, and the answer.
 - Known limit, left as is: at 1024–1279 px the table (~550 px) scrolls inside its own box,
   so the Rating and Actions columns need a sideways scroll there. Allowed by the spec, but
   flagged to the user.
+- **[prompt] "problem found: hide the chat moves the layout, better to not hide it?"** This
+  came from clicking through the app by hand. The automated checks had *confirmed* the jump
+  (the table went from 806 → 1,230 px) and counted it as a pass, because the spec asked for
+  it. The assistant agreed and removed Hide/Show and its state, since the panel is sticky and
+  scrolls on its own. It recorded the decision as a post-implementation clarification in spec
+  002, amended FR-004, and replaced the browser check with "no Hide control; table width
+  never changes". 34/34 checks pass. Lesson: a test can encode a bad requirement; a human
+  looking at the screen caught what the script couldn't judge.
