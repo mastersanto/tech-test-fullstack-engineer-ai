@@ -28,54 +28,38 @@ written while working; the four sections above it summarise it.
 
 ## 2. Prompts and outcomes
 
+Five prompts, one per decision that shaped the result. The rest (storage choice, committing
+the plan before code, the 1280 px breakpoint) are in the Running log.
+
 1. **`/speckit-specify indie games dashboard with CRUD, REST API and streaming AI chat`**:
    a deliberately short prompt. The constitution, which was derived from the brief's grading
    table, supplied the constraints. Outcome: a spec with 3 prioritised user stories, 24
    testable requirements and 8 measurable success criteria, with no clarification markers
-   left.
+   left. Every later step (plan, tasks, implementation, verification) was checked against it.
 2. **`/speckit-clarify does it make sense to create a docker-compose and have a docker for
-   the app and another for db? is any other container needed? suggestions?`**. Outcome: the
+   the app and another for db? is any other container needed? suggestions?`** Outcome: the
    assistant argued against it. Deployment is out of scope, SQLite is embedded, and every
-   reviewer has Node but not every reviewer runs Docker. I chose option A, a single local
-   process, which became clarification Q1 and tightened SC-006 to "Node + API key only".
-3. **"the recommendation for storage is SQLite? via better-sqlite3 or Drizzle?"** Outcome:
-   Drizzle on better-sqlite3, chosen because `drizzle-zod` gives one schema shared by the API,
-   the form and the AI tools. It's now the core of the code (`src/lib/db/schema.ts`). During
-   planning the assistant also checked whether Node's built-in `node:sqlite` could avoid a
-   native module. It couldn't: Drizzle has no driver for it.
-4. **"before implementing, does it make sense to commit?"** Outcome: yes. The planning
-   artefacts went in as two commits before any code, so the history shows
-   spec → plan → tasks → code in order and gave a rollback point before the scaffold merge.
-5. **`/speckit-implement`**: executed the 44 tasks phase by phase, with a commit at each
-   checkpoint. Before writing any SDK call, the assistant read the installed package's docs
-   or `.d.ts` instead of relying on memory. That caught several API changes; see section 3
-   and the Running log.
-
-### Later prompts: chat on the dashboard (002) and the redesign (003)
-
-6. **"I'd like to improve the UX, does it make sense to, instead of having a new section for
+   reviewer has Node but not every reviewer runs Docker. I chose a single local process,
+   which became clarification Q1 and tightened SC-006 to "Node + API key only".
+3. **"I'd like to improve the UX, does it make sense to, instead of having a new section for
    the chat, add it directly at home? if so, create a new spec for it?"** Outcome: yes. With
    the chat beside the table, answers can be checked against the data on screen. The
-   assistant created a separate spec (002) instead of editing the finished 001. The key design
-   decision was one chat that is never unmounted, moved only by CSS, so the conversation
-   survives edits and resizes.
-7. **"problem found: hide the chat moves the layout, better to not hide it?"** I found this by
-   clicking through the app. The browser checks had *passed* the jump (806 → 1,230 px table),
-   because the spec asked for a Hide button. Outcome: Hide removed and the spec amended. A
-   test can encode a bad requirement.
-8. **"yes, use the drawer below 1280px"**, after the assistant flagged from a screenshot that
-   at 1024–1279 px the table needed a sideways scroll. Outcome: the side panel starts at
-   1280 px, and every column fits at 1024 px.
-9. **"I have a new version of the UI in https://claude.ai/design/p/…, could we connect to
-   it? create a new spec for design improvements?"** Outcome: the assistant didn't connect.
-   The only tool that can read Claude Design projects is reserved for a different workflow,
-   and it wouldn't write a spec for a design it couldn't see. It asked for an export instead.
-10. **"exported to design/003, take a look"**. Outcome: the zip was opened in a scratch
-    folder as untrusted input, and only the README, theme and screenshots were reviewed and
-    kept. The assistant flagged that the design added new scope (search, filters, sorting),
-    then ran spec → plan → tasks → implement for 003. Before writing code it computed the
-    design's colour contrast and found one pairing at 4.49:1 (needs 4.5), which it fixed.
-    Result: 58/58 browser checks, 10/10 chat answers, and screenshots matching the handoff.
+   assistant wrote a separate spec (002) rather than editing the finished 001. Its key design
+   decision was one chat that is never unmounted and is moved only by CSS, so the
+   conversation survives edits and resizes. A 37-check browser run confirmed it.
+4. **"problem found: hide the chat moves the layout, better to not hide it?"** I found this by
+   clicking through the app. The assistant's browser checks had *passed* the jump (table
+   806 → 1,230 px), because the spec asked for a Hide button. Outcome: Hide removed and the
+   spec amended. A test can encode a bad requirement; looking at the screen caught it.
+5. **"I have a new version of the UI in https://claude.ai/design/p/…, could we connect to
+   it? create a new spec for design improvements?"**, then **"exported to design/003, take a
+   look"**. Outcome: the assistant didn't connect, because the only Claude Design tool
+   available is reserved for another workflow, and it wouldn't spec a design it couldn't
+   see. It opened the exported zip as untrusted input and kept only the files it reviewed. It
+   flagged the new scope (search, filters, sorting), then ran spec → plan → tasks → implement
+   for 003. Before coding, it computed the design's colour contrast and fixed the one pairing
+   at 4.49:1. Result: 58/58 browser checks, 10/10 chat answers, and screenshots matching the
+   handoff.
 
 ## 3. Where the AI got it wrong
 
