@@ -151,6 +151,9 @@ before any code was written.
   (`isStepCount`, `inputSchema`, `instructions`, `createAgentUIStreamResponse`), recorded in
   [research.md §12](specs/001-indie-games-dashboard/research.md).
 - Models: planning used Claude Opus 5.5 and Claude Fable 5.1 (switched with `/model`).
+- **[prompt] "before implementing, does it make sense to commit?"** Yes. The planning
+  artefacts went in as two commits before any code, so the history shows
+  spec → plan → tasks → code in order and gave a rollback point before the scaffold merge.
 
 ### Setup (T001–T007)
 
@@ -300,7 +303,8 @@ to the first text token, and the answer.
   0.75–2.07 s.
 - At 1024–1279 px the table (~550 px) had to scroll inside its own box to reach Rating and
   Edit/Delete. The spec allowed it, but the assistant flagged it from the screenshot and
-  suggested raising the side-panel breakpoint. The user agreed, so the panel now starts at
+  suggested raising the side-panel breakpoint. **[prompt] "yes, use the drawer below
+  1280px"**, so the panel now starts at
   `xl` (1280 px) and the drawer is used below that. Recorded as a second post-implementation
   clarification. Three new browser checks at 1024 px: drawer, not panel; all columns visible;
   conversation carried over. 37/37 pass.
