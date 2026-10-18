@@ -92,9 +92,16 @@ AI tools  (in-process) ───────┘          ▲
   the very next answer.
 - **Streaming.** `createAgentUIStreamResponse` on the server and `useChat` on the client.
   Tool calls arrive as typed message parts and are rendered as the lookup chips.
+- **Highlights reuse those tool results.** The browser reads the game ids from the latest
+  answer's lookups (`lib/ai/references.ts`) and lights up those rows. No extra API call or
+  prompt change is needed.
+- **The table view lives in the URL.** `?q=&genre=&sort=&dir=` is parsed on the server
+  (`lib/games/catalog-view.ts`) and queried through the repository, so filters survive edits
+  and reloads. Changing them never remounts the chat.
 
 Stack: Next.js 16 (App Router, Cache Components), React 19, Tailwind 4, Vercel AI SDK 7 with
-`@ai-sdk/anthropic`, Drizzle ORM on better-sqlite3, Zod 4, Vitest.
+`@ai-sdk/anthropic`, Drizzle ORM on better-sqlite3, Zod 4, Vitest. UI: Inter and Phosphor
+icons, following the Nocturne design tokens.
 
 ## Trade-offs
 
