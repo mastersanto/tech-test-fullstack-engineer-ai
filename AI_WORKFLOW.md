@@ -11,11 +11,18 @@ written while working; the four sections above it summarise it.
 - **Spec Kit** (`/speckit-*` skills inside Claude Code) for spec-driven development:
   constitution → specify → clarify → plan → tasks → implement. The 2–3 hour time box
   rewards deciding scope up front. Spec Kit gave the assistant written acceptance criteria to
-  build and test against, and the artefacts double as evidence of the process
-  ([`specs/001-indie-games-dashboard/`](specs/001-indie-games-dashboard/)).
+  build and test against, and the artefacts double as evidence of the process. There is one
+  spec folder per feature:
+  [`001`](specs/001-indie-games-dashboard/) (the brief),
+  [`002`](specs/002-dashboard-chat-panel/) (chat moved onto the dashboard) and
+  [`003`](specs/003-nocturne-ui-redesign/) (redesign).
+- **Claude Design** for the redesign. I designed "Nocturne" there and exported a handoff
+  (README, theme tokens, screenshots). Claude Code then turned it into a spec and code.
+- **Playwright** (installed in a scratch folder, not the project) so the assistant could test
+  the UI in a real browser: 37 checks for 002, 58 for 003.
 - **Models:** Claude Opus 5.5 for most of the session. I switched to Claude Fable 5.1 with
-  `/model` for the constitution, spec, clarify, plan and tasks steps, then back to Opus for
-  implementation.
+  `/model` for 001's constitution, spec, clarify, plan and tasks steps, then back to Opus for
+  implementation and for features 002 and 003.
 - **No Cursor or Copilot.** One agentic tool with shell access was enough, and kept the whole
   history in one transcript.
 
@@ -44,6 +51,32 @@ written while working; the four sections above it summarise it.
    or `.d.ts` instead of relying on memory. That caught several API changes; see section 3
    and the Running log.
 
+### Later prompts: chat on the dashboard (002) and the redesign (003)
+
+6. **"I'd like to improve the UX, does it make sense to, instead of having a new section for
+   the chat, add it directly at home? if so, create a new spec for it?"** Outcome: yes. With
+   the chat beside the table, answers can be checked against the data on screen. The
+   assistant created a separate spec (002) instead of editing the finished 001. The key design
+   decision was one chat that is never unmounted, moved only by CSS, so the conversation
+   survives edits and resizes.
+7. **"problem found: hide the chat moves the layout, better to not hide it?"** I found this by
+   clicking through the app. The browser checks had *passed* the jump (806 → 1,230 px table),
+   because the spec asked for a Hide button. Outcome: Hide removed and the spec amended. A
+   test can encode a bad requirement.
+8. **"yes, use the drawer below 1280px"**, after the assistant flagged from a screenshot that
+   at 1024–1279 px the table needed a sideways scroll. Outcome: the side panel starts at
+   1280 px, and every column fits at 1024 px.
+9. **"I have a new version of the UI in https://claude.ai/design/p/…, could we connect to
+   it? create a new spec for design improvements?"** Outcome: the assistant didn't connect.
+   The only tool that can read Claude Design projects is reserved for a different workflow,
+   and it wouldn't write a spec for a design it couldn't see. It asked for an export instead.
+10. **"exported to design/003, take a look"**. Outcome: the zip was opened in a scratch
+    folder as untrusted input, and only the README, theme and screenshots were reviewed and
+    kept. The assistant flagged that the design added new scope (search, filters, sorting),
+    then ran spec → plan → tasks → implement for 003. Before writing code it computed the
+    design's colour contrast and found one pairing at 4.49:1 (needs 4.5), which it fixed.
+    Result: 58/58 browser checks, 10/10 chat answers, and screenshots matching the handoff.
+
 ## 3. Where the AI got it wrong
 
 **The plan's Next.js caching instructions were wrong for the installed version.** During
@@ -67,6 +100,24 @@ A smaller one: the assistant stopped the dev server with `pkill -f 'next dev'`. 
 matched the shell running its own test script, so the script killed itself halfway through
 a check. It was spotted from the truncated output and fixed with `fuser -k 3000/tcp`.
 
+**During the redesign (003)**, four more, each caught before shipping:
+
+- **It wrote a success criterion the design can't meet.** "12 rows visible at 1280×800" was
+  never measured; the handoff's row height fits 11. The spec was corrected rather than
+  squeezing the design.
+- **The handoff's theme CSS couldn't be pasted as-is.** Its unlayered base rules would
+  override every Tailwind utility and hide the page's glow background. Moved into
+  `@layer base`.
+- **The chat input was off-screen.** The rail height assumed it starts at the top of the
+  page, but it sits under the header. Caught from the first screenshot.
+- **The drawer stayed open after resizing.** Opening the editor on a wide screen marked the
+  drawer as open, so it covered the page after the window was narrowed. Caught by the
+  browser suite.
+
+Its own test script also had three bugs (reading results before answers finished, not
+understanding Tailwind's `oklab()` colours, and testing a game that was never highlighted).
+They were fixed before any result was trusted. Details are in the Running log.
+
 ## 4. Parallel agents / subagents / worktrees
 
 **None were used for implementation, on purpose.** The codebase is about 1,300 lines, and
@@ -76,6 +127,9 @@ have added merge and coordination cost for little gain. `tasks.md` still marks t
 parallelisable tasks (`[P]`, 14 of 44), and the three user stories are independent once the
 foundation exists. On a larger feature, I'd give US1 and US2 to separate agents in separate
 git worktrees.
+
+The same reasoning held for 002 and 003. Each was small enough, and its stories shared the
+same few files (table, toolbar, rail, chat view), so one agent was simpler than several.
 
 Within the single session, the assistant still parallelised: independent tool calls (file
 writes, docs lookups, `npm view` checks) went out together, and the AI SDK was installed in a
