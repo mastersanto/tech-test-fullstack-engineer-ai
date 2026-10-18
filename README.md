@@ -130,6 +130,22 @@ icons, following the Nocturne design tokens.
 - **Filtering runs on the server, per request.** That's simple and fast for tens of games;
   there is no pagination.
 
+## How it was built
+
+Spec-driven with [Spec Kit](https://github.com/github/spec-kit) inside Claude Code, in three
+features. Each one's spec, plan, contracts and tasks were committed before its code:
+
+| Feature | What it delivered |
+|---|---|
+| [`001-indie-games-dashboard`](specs/001-indie-games-dashboard/) | The brief: CRUD dashboard, REST API, streaming tool-calling chat |
+| [`002-dashboard-chat-panel`](specs/002-dashboard-chat-panel/) | The chat moved beside the table (a UX review), drawer below 1280 px |
+| [`003-nocturne-ui-redesign`](specs/003-nocturne-ui-redesign/) | The Nocturne redesign from a Claude Design handoff: rail editor, search and sort, answer highlights |
+
+[`AI_WORKFLOW.md`](AI_WORKFLOW.md) covers the tools used, five key prompts and their
+outcomes, and where the AI got things wrong. The main case is a Next.js 16 caching pattern
+that would have served stale data in production. A running log written during the work is
+at the end.
+
 ## Project layout
 
 ```
@@ -141,5 +157,5 @@ src/lib/games/      repository (all queries), URL view parsing, number formattin
 src/lib/ai/         model, tools, agent, and which games an answer references
 tests/              repository, tool, URL view and reference tests
 design/003/handoff/ design reference: README, theme tokens, screenshots
-specs/              Spec Kit spec, plan, contracts, tasks
+specs/              Spec Kit spec, plan, contracts and tasks for features 001, 002 and 003
 ```
