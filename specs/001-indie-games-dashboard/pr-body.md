@@ -30,8 +30,13 @@ questions about it by calling tools.
 - **Process**: spec-driven with Spec Kit inside Claude Code, in three features. 001 is the
   dashboard, API and chat. 002 moves the chat onto the dashboard after a UX review. 003 is the
   Nocturne redesign from a design handoff. Each feature's spec, plan, contracts and tasks
-  were committed before its code. See `AI_WORKFLOW.md`, including where the AI got things
-  wrong.
+  were committed before its code.
+- **`AI_WORKFLOW.md`**: covers the tools (Claude Code with Spec Kit, Claude Design,
+  Playwright) and five key prompts with their outcomes. It records where the AI got it wrong
+  across all three features. The main case is a Next.js 16 caching pattern that would have
+  served stale data in production; others are a success criterion it never measured and a
+  layout bug a passing test missed. It also explains why one agent was used instead of
+  parallel ones. A running log written during the work is at the end.
 
 ## How to run
 
